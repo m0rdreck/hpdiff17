@@ -1,4 +1,60 @@
-import type { SiteConfig } from "./types";
+import type { NavItem, ServiceArea, SiteConfig } from "./types";
+import { serviceDetails } from "./services";
+
+/** Zones d'intervention (partagées entre le menu, la config et les pages). */
+const serviceAreas: ServiceArea[] = [
+  { name: "Saintes", base: true },
+  {
+    name: "Chaniers",
+    slug: "chaniers",
+    distanceKm: 5,
+    intro:
+      "Voisine immédiate de Saintes, Chaniers fait partie de mes communes d’intervention prioritaires pour vos travaux et dépannages électriques.",
+  },
+  {
+    name: "Corme-Royal",
+    slug: "corme-royal",
+    distanceKm: 12,
+    intro:
+      "À une douzaine de kilomètres de Saintes, j’interviens à Corme-Royal pour vos installations, rénovations et remises aux normes électriques.",
+  },
+  {
+    name: "Fontcouverte",
+    slug: "fontcouverte",
+    distanceKm: 6,
+    intro:
+      "Toute proche de Saintes, Fontcouverte bénéficie de mes services d’électricité générale et de dépannage rapide, particuliers comme professionnels.",
+  },
+  {
+    name: "Les Gonds",
+    slug: "les-gonds",
+    distanceKm: 4,
+    intro:
+      "Aux Gonds, à quelques minutes de mon atelier saintais, j’assure vos dépannages et vos travaux d’électricité avec la même exigence de qualité.",
+  },
+];
+
+/** Menu principal, avec sous-menus dérivés du contenu (prestations, zones). */
+const nav: NavItem[] = [
+  { label: "Accueil", href: "/" },
+  { label: "Dépannage électrique", href: "/depannage-electrique" },
+  {
+    label: "Électricité générale",
+    href: "/electricite-generale",
+    children: Object.values(serviceDetails).map((s) => ({
+      label: `${s.hero.title} ${s.hero.highlight ?? ""}`.trim(),
+      href: `/${s.slug}`,
+    })),
+  },
+  {
+    label: "Zones d’intervention",
+    href: "",
+    children: serviceAreas
+      .filter((a) => a.slug)
+      .map((a) => ({ label: `Électricien à ${a.name}`, href: `/electricien/${a.slug}` })),
+  },
+  { label: "Contact", href: "/contact" },
+];
 
 /**
  * Configuration globale du site.
@@ -42,44 +98,9 @@ export const site: SiteConfig = {
   ],
 
   serviceRadiusKm: 30,
-  serviceAreas: [
-    { name: "Saintes", base: true },
-    {
-      name: "Chaniers",
-      slug: "chaniers",
-      distanceKm: 5,
-      intro:
-        "Voisine immédiate de Saintes, Chaniers fait partie de mes communes d’intervention prioritaires pour vos travaux et dépannages électriques.",
-    },
-    {
-      name: "Corme-Royal",
-      slug: "corme-royal",
-      distanceKm: 12,
-      intro:
-        "À une douzaine de kilomètres de Saintes, j’interviens à Corme-Royal pour vos installations, rénovations et remises aux normes électriques.",
-    },
-    {
-      name: "Fontcouverte",
-      slug: "fontcouverte",
-      distanceKm: 6,
-      intro:
-        "Toute proche de Saintes, Fontcouverte bénéficie de mes services d’électricité générale et de dépannage rapide, particuliers comme professionnels.",
-    },
-    {
-      name: "Les Gonds",
-      slug: "les-gonds",
-      distanceKm: 4,
-      intro:
-        "Aux Gonds, à quelques minutes de mon atelier saintais, j’assure vos dépannages et vos travaux d’électricité avec la même exigence de qualité.",
-    },
-  ],
+  serviceAreas,
 
-  nav: [
-    { label: "Accueil", href: "/" },
-    { label: "Dépannage électrique", href: "/depannage-electrique" },
-    { label: "Électricité générale", href: "/electricite-generale" },
-    { label: "Contact", href: "/contact" },
-  ],
+  nav,
 
   trustBadges: [
     { icon: "/images/experience.png", label: "Plus de 15 ans d’expérience" },

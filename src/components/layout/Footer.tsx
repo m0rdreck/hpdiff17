@@ -68,13 +68,15 @@ export function Footer({ site }: { site: SiteConfig }) {
         <nav aria-label="Plan du site">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-white">Plan du site</h2>
           <ul className="mt-4 space-y-2 text-sm">
-            {site.nav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="transition-colors hover:text-gold-400">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+            {site.nav
+              .filter((item) => item.href)
+              .map((item) => (
+                <li key={item.label}>
+                  <Link href={item.href} className="transition-colors hover:text-gold-400">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
           </ul>
 
           {site.serviceAreas.some((a) => a.slug) && (

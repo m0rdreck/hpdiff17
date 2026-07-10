@@ -123,6 +123,13 @@ export interface OpeningHours {
   value: string;
 }
 
+/** Élément de navigation, avec sous-menu optionnel. */
+export interface NavItem {
+  label: string;
+  href: string;
+  children?: { label: string; href: string }[];
+}
+
 /** Page de service détaillée (cluster autour de la page pilier). */
 export interface ServiceDetail {
   slug: string;
@@ -165,7 +172,7 @@ export interface SiteConfig {
   openingHoursSpec?: OpeningHoursSpec[];
   serviceRadiusKm: number;
   serviceAreas: ServiceArea[];
-  nav: { label: string; href: string }[];
+  nav: NavItem[];
   trustBadges: TrustBadge[];
   reviews: Review[];
   faq: FaqItem[];
