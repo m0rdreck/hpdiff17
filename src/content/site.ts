@@ -25,20 +25,53 @@ export const site: SiteConfig = {
   },
   googleMapsUrl:
     "https://www.google.com/maps/place/Hp+Diff/data=!4m2!3m1!1s0x0:0xed46889e09c6b0b6",
+  sameAs: [
+    "https://www.google.com/maps/place/Hp+Diff/data=!4m2!3m1!1s0x0:0xed46889e09c6b0b6",
+  ],
+  // Coordonnées de Saintes (à affiner sur l'adresse exacte si besoin).
+  geo: { lat: 45.7485, lng: -0.632 },
 
   hours: [
     { label: "Lundi – Vendredi", value: "8 h – 18 h" },
     { label: "Samedi", value: "Urgence dépannage : 8 h – 12 h" },
     { label: "Dimanche", value: "Fermé" },
   ],
+  openingHoursSpec: [
+    { days: ["Mo", "Tu", "We", "Th", "Fr"], opens: "08:00", closes: "18:00" },
+    { days: ["Sa"], opens: "08:00", closes: "12:00" },
+  ],
 
   serviceRadiusKm: 30,
   serviceAreas: [
-    { name: "Saintes" },
-    { name: "Chaniers" },
-    { name: "Corme-Royal" },
-    { name: "Fontcouverte" },
-    { name: "Les Gonds" },
+    { name: "Saintes", base: true },
+    {
+      name: "Chaniers",
+      slug: "chaniers",
+      distanceKm: 5,
+      intro:
+        "Voisine immédiate de Saintes, Chaniers fait partie de mes communes d’intervention prioritaires pour vos travaux et dépannages électriques.",
+    },
+    {
+      name: "Corme-Royal",
+      slug: "corme-royal",
+      distanceKm: 12,
+      intro:
+        "À une douzaine de kilomètres de Saintes, j’interviens à Corme-Royal pour vos installations, rénovations et remises aux normes électriques.",
+    },
+    {
+      name: "Fontcouverte",
+      slug: "fontcouverte",
+      distanceKm: 6,
+      intro:
+        "Toute proche de Saintes, Fontcouverte bénéficie de mes services d’électricité générale et de dépannage rapide, particuliers comme professionnels.",
+    },
+    {
+      name: "Les Gonds",
+      slug: "les-gonds",
+      distanceKm: 4,
+      intro:
+        "Aux Gonds, à quelques minutes de mon atelier saintais, j’assure vos dépannages et vos travaux d’électricité avec la même exigence de qualité.",
+    },
   ],
 
   nav: [

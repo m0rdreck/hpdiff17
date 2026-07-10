@@ -38,7 +38,7 @@ export function Footer({ site }: { site: SiteConfig }) {
           </div>
         </div>
 
-        {/* Plan du site */}
+        {/* Plan du site + zones */}
         <nav aria-label="Plan du site">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-white">Plan du site</h2>
           <ul className="mt-4 space-y-2 text-sm">
@@ -50,6 +50,25 @@ export function Footer({ site }: { site: SiteConfig }) {
               </li>
             ))}
           </ul>
+
+          {site.serviceAreas.some((a) => a.slug) && (
+            <>
+              <h2 className="mt-6 text-sm font-semibold uppercase tracking-wider text-white">
+                Zones d’intervention
+              </h2>
+              <ul className="mt-4 space-y-2 text-sm">
+                {site.serviceAreas
+                  .filter((a) => a.slug)
+                  .map((a) => (
+                    <li key={a.slug}>
+                      <Link href={`/electricien/${a.slug}`} className="transition-colors hover:text-gold-400">
+                        Électricien à {a.name}
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </>
+          )}
         </nav>
 
         {/* Coordonnées */}

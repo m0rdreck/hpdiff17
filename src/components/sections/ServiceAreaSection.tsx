@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "@/components/ui/Reveal";
 import type { SiteConfig } from "@/content/types";
@@ -23,17 +24,25 @@ export function ServiceAreaSection({ site }: { site: SiteConfig }) {
           </p>
 
           <ul className="mt-7 flex flex-wrap gap-3">
-            {site.serviceAreas.map((area, i) => (
-              <Reveal
-                key={area.name}
-                as="li"
-                delay={i * 90}
-                className="flex items-center gap-2 rounded-xl border border-navy-900/10 bg-white px-4 py-2.5 text-sm font-semibold text-navy-900 shadow-[var(--shadow-card)] transition-transform duration-300 hover:-translate-y-1 hover:border-gold-500"
-              >
-                <Icon name="pin" className="size-4 text-gold-600" />
-                {area.name}
-              </Reveal>
-            ))}
+            {site.serviceAreas.map((area, i) => {
+              const chipClass =
+                "flex items-center gap-2 rounded-xl border border-navy-900/10 bg-white px-4 py-2.5 text-sm font-semibold text-navy-900 shadow-[var(--shadow-card)] transition-transform duration-300 hover:-translate-y-1 hover:border-gold-500";
+              return (
+                <Reveal key={area.name} as="li" delay={i * 90} className="list-none">
+                  {area.slug ? (
+                    <Link href={`/electricien/${area.slug}`} className={chipClass}>
+                      <Icon name="pin" className="size-4 text-gold-600" />
+                      {area.name}
+                    </Link>
+                  ) : (
+                    <span className={chipClass}>
+                      <Icon name="pin" className="size-4 text-gold-600" />
+                      {area.name}
+                    </span>
+                  )}
+                </Reveal>
+              );
+            })}
           </ul>
         </Reveal>
 

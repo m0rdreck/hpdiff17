@@ -9,7 +9,7 @@ import { ServiceAreaSection } from "@/components/sections/ServiceAreaSection";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { Faq } from "@/components/sections/Faq";
 import { Reveal } from "@/components/ui/Reveal";
-import { StructuredData } from "@/components/StructuredData";
+import { FaqSchema } from "@/components/StructuredData";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage("/");
@@ -28,7 +28,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <StructuredData site={site} faq={site.faq} />
+      <FaqSchema items={site.faq} />
       <Hero hero={page.hero} site={site} priority />
       <TrustBadges badges={site.trustBadges} />
 

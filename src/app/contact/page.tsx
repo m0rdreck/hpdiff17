@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getSiteConfig } from "@/lib/content";
 import { ContactForm } from "@/components/ContactForm";
+import { MapEmbed } from "@/components/sections/MapEmbed";
 import { Icon } from "@/components/ui/Icon";
 
 export const metadata: Metadata = {
@@ -106,6 +107,8 @@ export default async function ContactPage() {
               <Icon name="map" className="size-4" />
               Voir sur Google Maps
             </a>
+
+            <MapEmbed site={site} className="mt-8" />
           </div>
 
           {/* Formulaire */}

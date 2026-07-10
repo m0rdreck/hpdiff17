@@ -1,6 +1,6 @@
 import { site } from "@/content/site";
 import { pages } from "@/content/pages";
-import type { Page, SiteConfig } from "@/content/types";
+import type { Page, ServiceArea, SiteConfig } from "@/content/types";
 
 /**
  * Couche d'accès au contenu.
@@ -25,4 +25,13 @@ export async function getPage(slug: string): Promise<Page | null> {
 
 export async function getAllPageSlugs(): Promise<string[]> {
   return Object.keys(pages);
+}
+
+/** Villes disposant d'une page locale (celles ayant un `slug`). */
+export async function getCityAreas(): Promise<ServiceArea[]> {
+  return site.serviceAreas.filter((a) => a.slug);
+}
+
+export async function getCityBySlug(slug: string): Promise<ServiceArea | null> {
+  return site.serviceAreas.find((a) => a.slug === slug) ?? null;
 }

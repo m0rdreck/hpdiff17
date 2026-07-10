@@ -62,6 +62,27 @@ export interface Review {
 
 export interface ServiceArea {
   name: string;
+  /** identifiant d'URL, ex: "corme-royal" (pour la page locale) */
+  slug?: string;
+  /** commune de rattachement de l'entreprise (pas de page dédiée) */
+  base?: boolean;
+  /** distance approximative depuis la base, en km */
+  distanceKm?: number;
+  /** phrase d'accroche locale (unique par ville, pour le SEO) */
+  intro?: string;
+}
+
+/** Horaires structurés (pour les données Schema.org). */
+export interface OpeningHoursSpec {
+  /** jours en anglais court : Mo, Tu, We, Th, Fr, Sa, Su */
+  days: string[];
+  opens: string; // "08:00"
+  closes: string; // "18:00"
+}
+
+export interface GeoPoint {
+  lat: number;
+  lng: number;
 }
 
 /** Métadonnées SEO d'une page. */
@@ -120,7 +141,13 @@ export interface SiteConfig {
     country: string;
   };
   googleMapsUrl: string;
+  /** liens officiels (fiche Google, réseaux…) pour le schema `sameAs` */
+  sameAs?: string[];
+  /** coordonnées GPS de l'établissement (Schema.org geo) */
+  geo?: GeoPoint;
   hours: OpeningHours[];
+  /** horaires structurés pour Schema.org (openingHoursSpecification) */
+  openingHoursSpec?: OpeningHoursSpec[];
   serviceRadiusKm: number;
   serviceAreas: ServiceArea[];
   nav: { label: string; href: string }[];
