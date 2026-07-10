@@ -39,7 +39,8 @@ export async function generateMetadata(): Promise<Metadata> {
       description: site.description,
       images: [{ url: site.logo }],
     },
-    icons: { icon: site.logo },
+    // Les favicons sont fournis par les fichiers src/app/icon.png,
+    // apple-icon.png et favicon.ico (convention Next.js).
     alternates: { canonical: "/" },
   };
 }

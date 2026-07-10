@@ -41,7 +41,7 @@ export function Header({ site }: { site: SiteConfig }) {
     >
       <div className="container-page flex items-center justify-between gap-4 py-2.5">
         <Link href="/" className="flex items-center gap-2.5" aria-label={`${site.name} — accueil`}>
-          <Image src={site.logo} alt={site.name} width={110} height={106} priority className="h-12 w-auto" />
+          <Image src={site.logo} alt={site.name} width={130} height={125} priority className="h-14 w-auto" />
         </Link>
 
         {/* Navigation desktop */}
@@ -56,7 +56,7 @@ export function Header({ site }: { site: SiteConfig }) {
                     <Link
                       href={item.href}
                       aria-current={active ? "page" : undefined}
-                      className={`relative inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                      className={`relative inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
                         active ? "text-navy-900" : "text-navy-900/70 hover:text-navy-900"
                       }`}
                     >
@@ -73,7 +73,7 @@ export function Header({ site }: { site: SiteConfig }) {
                   ) : (
                     <button
                       type="button"
-                      className="inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-navy-900/70 transition-colors hover:text-navy-900"
+                      className="inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium text-navy-900/70 transition-colors hover:text-navy-900"
                     >
                       {item.label}
                       <Icon name="chevron" className="size-3.5 transition-transform group-hover:-rotate-180" />
@@ -115,7 +115,7 @@ export function Header({ site }: { site: SiteConfig }) {
         <div className="hidden items-center gap-4 lg:flex">
           <a
             href={`tel:${site.phone.e164}`}
-            className="flex items-center gap-2 text-sm font-semibold text-navy-900 transition-colors hover:text-gold-600"
+            className="flex items-center gap-2 whitespace-nowrap text-sm font-semibold text-navy-900 transition-colors hover:text-gold-600"
           >
             <span className="flex size-8 items-center justify-center rounded-full bg-gold-50 text-gold-600">
               <Icon name="phone" className="size-4" />
@@ -124,7 +124,7 @@ export function Header({ site }: { site: SiteConfig }) {
           </a>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 rounded-full bg-navy-900 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-navy-700"
+            className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-navy-900 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-navy-700"
           >
             Devis gratuit
             <Icon name="arrow" className="size-4" />
