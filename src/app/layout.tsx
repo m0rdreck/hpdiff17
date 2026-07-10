@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins, Montserrat } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { getSiteConfig } from "@/lib/content";
 import { Header } from "@/components/layout/Header";
@@ -37,7 +38,14 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: site.name,
       title: `${site.slogan} | ${site.name}`,
       description: site.description,
-      images: [{ url: site.logo }],
+      url: site.url,
+      images: [{ url: "/og.png", width: 1200, height: 630, alt: `${site.name} — ${site.slogan}` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${site.slogan} | ${site.name}`,
+      description: site.description,
+      images: ["/og.png"],
     },
     // Les favicons sont fournis par les fichiers src/app/icon.png,
     // apple-icon.png et favicon.ico (convention Next.js).
@@ -60,6 +68,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Header site={site} />
         <main id="contenu">{children}</main>
         <Footer site={site} />
+        <Analytics />
       </body>
     </html>
   );

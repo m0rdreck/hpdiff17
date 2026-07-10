@@ -67,11 +67,11 @@ export const site: SiteConfig = {
   slogan: "Électricien à Saintes",
   description:
     "HP Diff est une entreprise d’électricité générale à Saintes. Installation, rénovation et dépannage électriques : contactez votre électricien pour une intervention adaptée à vos besoins.",
-  url: "https://www.hpdiff-17.fr",
+  url: "https://hpdiff17.fr",
   logo: "/images/logo.png",
 
   phone: { display: "06 68 87 49 41", e164: "+33668874941" },
-  email: "contact@hpdiff-17.fr",
+  email: "contact@hpdiff17.fr",
 
   address: {
     street: "16 Rue Montplaisir",
@@ -108,23 +108,11 @@ export const site: SiteConfig = {
     { icon: "/images/ecoute.png", label: "À l’écoute de vos besoins" },
   ],
 
-  reviews: [
-    {
-      author: "Sébastien M.",
-      rating: 5,
-      text: "Intervention rapide et soignée pour la remise aux normes de mon tableau électrique. Travail sérieux, je recommande vivement.",
-    },
-    {
-      author: "Claire D.",
-      rating: 5,
-      text: "Très à l’écoute, ponctuel et de bon conseil. Dépannage réalisé le jour même, tout fonctionne parfaitement.",
-    },
-    {
-      author: "Julien P.",
-      rating: 5,
-      text: "Installation électrique complète de notre rénovation. Un professionnel rigoureux et transparent sur les tarifs.",
-    },
-  ],
+  // ⚠️ N'ajoutez ICI que de VRAIS avis clients (afficher de faux avis est
+  //    illégal en France). La section « avis » et la note agrégée (schema)
+  //    s'affichent automatiquement dès qu'au moins un avis réel est présent.
+  //    Recopiez vos avis Google : { author, rating (0-5), text, date? }.
+  reviews: [],
 
   faq: [
     {
