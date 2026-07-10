@@ -4,6 +4,7 @@ import { getPage, getSiteConfig } from "@/lib/content";
 import { Hero } from "@/components/sections/Hero";
 import { FeatureSection } from "@/components/sections/FeatureSection";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
+import { ServiceLinks } from "@/components/sections/ServiceLinks";
 import { ServiceAreaSection } from "@/components/sections/ServiceAreaSection";
 import { ContactCta } from "@/components/sections/ContactCta";
 
@@ -36,6 +37,11 @@ export default async function ElectriciteGeneralePage() {
           tone="light"
         />
       )}
+      <ServiceLinks
+        title="Mes prestations détaillées"
+        intro="Découvrez le détail de mes interventions en électricité, chacune adaptée à un besoin précis."
+        tone="white"
+      />
       <ContactCta
         site={site}
         title="Un projet en électricité générale ?"

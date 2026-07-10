@@ -1,13 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
+import { serviceDetails } from "@/content/services";
 import type { SiteConfig } from "@/content/types";
 
 export function Footer({ site }: { site: SiteConfig }) {
   const year = 2026;
+  const services = Object.values(serviceDetails);
   return (
     <footer className="bg-navy-950 text-white/70">
-      <div className="container-page grid gap-10 py-14 md:grid-cols-[1.2fr_1fr_1fr]">
+      <div className="container-page grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.1fr]">
         {/* Marque */}
         <div>
           <Image
@@ -37,6 +39,30 @@ export function Footer({ site }: { site: SiteConfig }) {
             </a>
           </div>
         </div>
+
+        {/* Prestations */}
+        <nav aria-label="Prestations">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-white">Prestations</h2>
+          <ul className="mt-4 space-y-2 text-sm">
+            <li>
+              <Link href="/electricite-generale" className="transition-colors hover:text-gold-400">
+                Électricité générale
+              </Link>
+            </li>
+            <li>
+              <Link href="/depannage-electrique" className="transition-colors hover:text-gold-400">
+                Dépannage électrique
+              </Link>
+            </li>
+            {services.map((s) => (
+              <li key={s.slug}>
+                <Link href={`/${s.slug}`} className="transition-colors hover:text-gold-400">
+                  {s.hero.title} {s.hero.highlight}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
         {/* Plan du site + zones */}
         <nav aria-label="Plan du site">

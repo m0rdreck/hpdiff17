@@ -1,6 +1,7 @@
 import { site } from "@/content/site";
 import { pages } from "@/content/pages";
-import type { Page, ServiceArea, SiteConfig } from "@/content/types";
+import { serviceDetails } from "@/content/services";
+import type { Page, ServiceArea, ServiceDetail, SiteConfig } from "@/content/types";
 
 /**
  * Couche d'accès au contenu.
@@ -34,4 +35,13 @@ export async function getCityAreas(): Promise<ServiceArea[]> {
 
 export async function getCityBySlug(slug: string): Promise<ServiceArea | null> {
   return site.serviceAreas.find((a) => a.slug === slug) ?? null;
+}
+
+/** Pages de service détaillées. */
+export async function getServiceDetail(slug: string): Promise<ServiceDetail | null> {
+  return serviceDetails[slug] ?? null;
+}
+
+export async function getAllServiceDetails(): Promise<ServiceDetail[]> {
+  return Object.values(serviceDetails);
 }

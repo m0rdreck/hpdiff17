@@ -123,6 +123,21 @@ export interface OpeningHours {
   value: string;
 }
 
+/** Page de service détaillée (cluster autour de la page pilier). */
+export interface ServiceDetail {
+  slug: string;
+  seo: Seo;
+  hero: Hero;
+  /** paragraphe d'introduction */
+  intro: string;
+  /** prestations concrètes incluses (grille de cartes) */
+  benefits: { title: string; text: string }[];
+  /** étapes d'intervention (optionnel, liste numérotée) */
+  steps?: { title: string; text: string }[];
+  /** slugs des services liés (maillage interne) */
+  related?: string[];
+}
+
 /** Configuration globale, partagée par toutes les pages. */
 export interface SiteConfig {
   name: string;
