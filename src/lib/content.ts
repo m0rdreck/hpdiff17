@@ -1,0 +1,28 @@
+import { site } from "@/content/site";
+import { pages } from "@/content/pages";
+import type { Page, SiteConfig } from "@/content/types";
+
+/**
+ * Couche d'accès au contenu.
+ *
+ * ⇢ C'EST ICI que se fera le passage à un back-office / CMS.
+ *   Aujourd'hui ces fonctions lisent des fichiers TypeScript statiques.
+ *   Demain, il suffira de réécrire leur corps pour appeler une API, une
+ *   base de données (Prisma, Supabase…) ou un CMS headless (Sanity,
+ *   Strapi, Payload…) — la signature reste identique, donc AUCUN composant
+ *   ni AUCUNE page n'aura besoin d'être modifié.
+ *
+ *   Elles sont volontairement `async` pour anticiper ce futur appel réseau.
+ */
+
+export async function getSiteConfig(): Promise<SiteConfig> {
+  return site;
+}
+
+export async function getPage(slug: string): Promise<Page | null> {
+  return pages[slug] ?? null;
+}
+
+export async function getAllPageSlugs(): Promise<string[]> {
+  return Object.keys(pages);
+}
