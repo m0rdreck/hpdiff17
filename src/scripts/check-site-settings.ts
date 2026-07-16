@@ -48,6 +48,14 @@ console.log(
 const orphans = areas.docs.filter((a) => !a.slug && !a.base).map((a) => a.name);
 if (orphans.length) console.log("  ⚠️ sans slug ni rattachement :", orphans.join(", "));
 
-const ok = iconsOk && areas.totalDocs > 0 && !orphans.length;
+const services = await payload.find({ collection: "service-details", limit: 0, depth: 0 });
+console.log("  prestations:", services.totalDocs, "→", services.docs.map((s) => s.slug).join(", "));
+
+// Une prestation sans image de bandeau casserait sa page.
+const noHero = services.docs.filter((s) => !s.hero?.image).map((s) => s.slug);
+if (noHero.length) console.log("  ⚠️ sans image de bandeau :", noHero.join(", "));
+
+const ok =
+  iconsOk && areas.totalDocs > 0 && !orphans.length && services.totalDocs > 0 && !noHero.length;
 console.log(ok ? "\n✓ prêt pour le déploiement" : "\n✗ problème détecté");
 process.exit(ok ? 0 : 1);
