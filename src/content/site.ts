@@ -124,7 +124,7 @@ export const site: SiteConfig = {
   email: "contact@hpdiff17.fr",
 
   address: {
-    street: "16 Rue Montplaisir",
+    street: "16 bis Rue Montplaisir",
     postalCode: "17100",
     city: "Saintes",
     country: "France",

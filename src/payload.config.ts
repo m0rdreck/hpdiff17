@@ -6,7 +6,6 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { fr } from "@payloadcms/translations/languages/fr";
 import { buildConfig } from "payload";
-import sharp from "sharp";
 
 import { Guides } from "@/collections/Guides";
 import { Media } from "@/collections/Media";
@@ -45,10 +44,17 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || "",
     },
   }),
-  // Payload type `sharp` d'après la 0.32.x ; on installe la 0.35.x (seule à
-  // fournir des binaires pour Node 24). L'API consommée par Payload est
-  // identique entre les deux — l'écart est purement au niveau des types.
-  sharp: sharp as unknown as Parameters<typeof buildConfig>[0]["sharp"],
+  // ⚠️ PAS de `sharp` ici, volontairement.
+  //    Ses binaires natifs (libvips) vivent derrière les liens symboliques du
+  //    store pnpm, que le tracing de fichiers de Vercel ne suit pas : l'admin
+  //    tombait en 500 (« Could not load the sharp module ») en production.
+  //    Payload ne s'en sert que pour les vignettes et les métadonnées d'image,
+  //    dont on n'a pas l'usage : aucun `imageSizes` n'est déclaré sur Media, et
+  //    les guides affichent leurs images en `fill` — c'est l'optimiseur de
+  //    Vercel qui les redimensionne à la livraison.
+  //    Conséquence assumée : les images sont stockées telles quelles sur Blob,
+  //    sans redimensionnement à l'upload. Pour y revenir, il faudra régler le
+  //    tracing des binaires (ou passer node-linker=hoisted).
   plugins: [
     // Les images uploadées partent sur Vercel Blob plutôt que sur le disque
     // de la fonction (éphémère et non partagé entre instances).
