@@ -51,6 +51,9 @@ importers:
         specifier: ^0.35.3
         version: 0.35.3(@types/node@20.19.43)
     devDependencies:
+      '@dotenvx/dotenvx':
+        specifier: ^2.10.0
+        version: 2.10.0
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.3.2
@@ -196,6 +199,16 @@ packages:
     resolution: {integrity: sha512-+MKAJEOfaBe5SmV6t34p80MMKhjvUz0vRrvVJbPT0WElzaOJ/1xs+D+KDv+tD/NE5ujfrChEcshd4fLn0wpiqg==}
     peerDependencies:
       react: '>=16.8.0'
+
+  '@dotenvx/dotenvx@2.10.0':
+    resolution: {integrity: sha512-GxY6K7kqVrC7DkMrwvcTXRfDBU/gBFu2UOtAR+6hpBbA59TygzdKAYGJhX4jZCpJMNU/EgvoTjK4D4BtY2vaEg==}
+    hasBin: true
+
+  '@dotenvx/primitives@1.8.1':
+    resolution: {integrity: sha512-xcEkhZDDA9E/ElU27Ft6ZaBBZN4EkXDmD0H4kZB7CcEMfQr43P6RMb7AMU6xYvqLyg2zT8rb0lEuaE8gUlUEiw==}
+
+  '@dotenvx/tooling@1.0.2':
+    resolution: {integrity: sha512-yf4VwIZUzSqlLy2pe0kH2xk6dME73oYW5XqcHE7M1zA1H0RX/dSUThsSRmpCjp622iW9f6VGQl5Aa6szt5Xc0w==}
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
@@ -4027,6 +4040,14 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+  yocto-spinner@1.2.1:
+    resolution: {integrity: sha512-9cbFWLhbiZp+820O4pkHGNncI7+MrUGzBOjw8NMG+ewsY+aG0DdEXnr19Smxao32YOjLZRMdn1UtaxcrXOYOIg==}
+    engines: {node: '>=18.19'}
+
+  yoctocolors@2.1.2:
+    resolution: {integrity: sha512-CzhO+pFNo8ajLM2d2IW/R93ipy99LWjtwblvC1RsoSUMZgyLbYFr221TnSNT7GjGdYui6P459mw9JH/g/zW2ug==}
+    engines: {node: '>=18'}
+
   zod-validation-error@4.0.2:
     resolution: {integrity: sha512-Q6/nZLe6jxuU80qb/4uJ4t5v2VEZ44lzQjPDhYJNztRQ4wyWc6VF3D3Kb/fAuPetZQnhS3hnajCf9CsWesghLQ==}
     engines: {node: '>=18.0.0'}
@@ -4186,6 +4207,16 @@ snapshots:
     dependencies:
       react: 19.2.4
       tslib: 2.8.1
+
+  '@dotenvx/dotenvx@2.10.0':
+    dependencies:
+      '@dotenvx/primitives': 1.8.1
+      '@dotenvx/tooling': 1.0.2
+      yocto-spinner: 1.2.1
+
+  '@dotenvx/primitives@1.8.1': {}
+
+  '@dotenvx/tooling@1.0.2': {}
 
   '@drizzle-team/brocli@0.10.2': {}
 
@@ -8316,6 +8347,12 @@ snapshots:
       lib0: 0.2.117
 
   yocto-queue@0.1.0: {}
+
+  yocto-spinner@1.2.1:
+    dependencies:
+      yoctocolors: 2.1.2
+
+  yoctocolors@2.1.2: {}
 
   zod-validation-error@4.0.2(zod@4.4.3):
     dependencies:

@@ -5,10 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "payload migrate && payload generate:importmap && next build",
+    "build": "payload migrate --force-accept-warning && payload generate:importmap && next build",
     "start": "next start",
     "lint": "eslint",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "migrate:prod": "dotenvx run -f .env.production.local -- cross-env NODE_ENV=production NODE_OPTIONS=--no-deprecation payload migrate --force-accept-warning",
+    "seed:site:prod": "dotenvx run -f .env.production.local -- cross-env NODE_ENV=production tsx src/scripts/seed-site-settings.ts",
+    "check:site:prod": "dotenvx run -f .env.production.local -- cross-env NODE_ENV=production tsx src/scripts/check-site-settings.ts",
+    "seed:guides:prod": "dotenvx run -f .env.production.local -- cross-env NODE_ENV=production tsx src/scripts/seed-guides.ts",
     "generate:types": "pnpm payload generate:types",
     "seed:guides": "cross-env NODE_ENV=production tsx --env-file=.env src/scripts/seed-guides.ts",
     "seed:site": "cross-env NODE_ENV=production tsx --env-file=.env src/scripts/seed-site-settings.ts"
@@ -30,6 +34,7 @@
     "sharp": "^0.35.3"
   },
   "devDependencies": {
+    "@dotenvx/dotenvx": "^2.10.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
