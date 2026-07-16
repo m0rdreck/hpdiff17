@@ -13,6 +13,13 @@ import { RootLayout, handleServerFunctions } from "@payloadcms/next/layouts";
 import React from "react";
 
 import { importMap } from "./admin/importMap";
+
+// Feuille de style PRÉCOMPILÉE du back-office (~300 Ko).
+// Indispensable : `RootLayout` importe bien `@payloadcms/ui/scss/app.scss`,
+// mais Turbopack (compilateur par défaut de Next 16) ne traite pas ce SCSS
+// depuis node_modules — l'admin s'affichait sans aucun style, seuls quelques
+// fragments (banner, ReactCrop) étant émis.
+import "@payloadcms/next/css";
 import "./custom.scss";
 
 type Args = {
