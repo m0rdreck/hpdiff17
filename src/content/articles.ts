@@ -3,6 +3,13 @@ import type { Article } from "./types";
 /**
  * Section « Guides & conseils » — contenu éditorial SEO.
  *
+ * ⚠️ CE FICHIER N'ALIMENTE PLUS LE SITE.
+ *    Les guides sont désormais administrés dans le back-office (/admin) et
+ *    stockés en base ; `src/lib/content.ts` les lit depuis Payload.
+ *    Ce fichier ne sert plus qu'à `pnpm seed:guides`, qui a servi à
+ *    importer ces 4 articles en base. Le modifier n'a AUCUN effet sur le
+ *    site en ligne — passer par le back-office.
+ *
  * Chaque article cible une intention de recherche informationnelle
  * (« prix mise aux normes », « quand changer son tableau »…) et renvoie
  * vers les pages de service correspondantes (maillage interne) + un devis.
