@@ -10,7 +10,8 @@
     "lint": "eslint",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "generate:types": "pnpm payload generate:types",
-    "seed:guides": "tsx --env-file=.env src/scripts/seed-guides.ts"
+    "seed:guides": "cross-env NODE_ENV=production tsx --env-file=.env src/scripts/seed-guides.ts",
+    "seed:site": "cross-env NODE_ENV=production tsx --env-file=.env src/scripts/seed-site-settings.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.86.0",

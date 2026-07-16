@@ -89,8 +89,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -480,6 +484,211 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Coordonnées, horaires, avis et questions fréquentes. Ces informations apparaissent sur TOUTES les pages du site.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  name: string;
+  legalName: string;
+  /**
+   * Utilisé dans le titre des pages. Ex : « Électricien à Saintes ».
+   */
+  slogan: string;
+  /**
+   * Meta description de l'accueil et partages sur les réseaux.
+   */
+  description: string;
+  phone: {
+    /**
+     * Tel qu'il apparaît sur le site. Ex : 06 68 87 49 41.
+     */
+    display: string;
+    /**
+     * Utilisé par les boutons « Appeler ». Format +33… sans espace. Ex : +33668874941.
+     */
+    e164: string;
+  };
+  email?: string | null;
+  address: {
+    street: string;
+    postalCode: string;
+    city: string;
+    country: string;
+  };
+  googleMapsUrl: string;
+  /**
+   * Fiche Google, réseaux sociaux… Envoyés à Google pour relier le site à l'entreprise.
+   */
+  sameAs?:
+    | {
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Position de l'établissement, envoyée à Google (SEO local).
+   */
+  geo: {
+    lat: number;
+    lng: number;
+  };
+  /**
+   * Texte libre, affiché tel quel sur le site.
+   */
+  hours: {
+    /**
+     * Ex : « Lundi – Vendredi ».
+     */
+    label: string;
+    /**
+     * Ex : « 8 h – 18 h » ou « Fermé ».
+     */
+    value: string;
+    id?: string | null;
+  }[];
+  /**
+   * Version machine des horaires, envoyée à Google. À garder cohérente avec les horaires affichés ci-dessus.
+   */
+  openingHoursSpec?:
+    | {
+        days: ('Mo' | 'Tu' | 'We' | 'Th' | 'Fr' | 'Sa' | 'Su')[];
+        /**
+         * Format 24 h. Ex : 08:00.
+         */
+        opens: string;
+        /**
+         * Format 24 h. Ex : 18:00.
+         */
+        closes: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Affiché sur le site (« dans un rayon d'environ X km ») et dans la FAQ.
+   */
+  serviceRadiusKm: number;
+  /**
+   * Bandeau affiché sous le hero des pages.
+   */
+  trustBadges?:
+    | {
+        icon: number | Media;
+        label: string;
+        /**
+         * À cocher pour une icône noire, afin de la passer en blanc.
+         */
+        invert?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * ⚠️ UNIQUEMENT de VRAIS avis clients — publier de faux avis est illégal en France. Recopiez vos avis Google à l'identique. La section « avis » et la note moyenne apparaissent dès qu'un avis est présent.
+   */
+  reviews?:
+    | {
+        author: string;
+        rating: number;
+        text: string;
+        date?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Affichées sur l'accueil et les pages ville, et envoyées à Google (FAQ schema).
+   */
+  faq: {
+    question: string;
+    answer: string;
+    id?: string | null;
+  }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  name?: T;
+  legalName?: T;
+  slogan?: T;
+  description?: T;
+  phone?:
+    | T
+    | {
+        display?: T;
+        e164?: T;
+      };
+  email?: T;
+  address?:
+    | T
+    | {
+        street?: T;
+        postalCode?: T;
+        city?: T;
+        country?: T;
+      };
+  googleMapsUrl?: T;
+  sameAs?:
+    | T
+    | {
+        url?: T;
+        id?: T;
+      };
+  geo?:
+    | T
+    | {
+        lat?: T;
+        lng?: T;
+      };
+  hours?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  openingHoursSpec?:
+    | T
+    | {
+        days?: T;
+        opens?: T;
+        closes?: T;
+        id?: T;
+      };
+  serviceRadiusKm?: T;
+  trustBadges?:
+    | T
+    | {
+        icon?: T;
+        label?: T;
+        invert?: T;
+        id?: T;
+      };
+  reviews?:
+    | T
+    | {
+        author?: T;
+        rating?: T;
+        text?: T;
+        date?: T;
+        id?: T;
+      };
+  faq?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

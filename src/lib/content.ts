@@ -3,7 +3,7 @@ import { getPayload } from "payload";
 import { site } from "@/content/site";
 import { pages } from "@/content/pages";
 import { serviceDetails } from "@/content/services";
-import type { Guide } from "@/payload-types";
+import type { Guide, SiteSetting } from "@/payload-types";
 import type {
   Article,
   ArticleBlock,
@@ -18,17 +18,71 @@ import type {
  * sources de données.
  *
  * État actuel :
- *   • Guides  → administrés dans Payload (base Neon). Voir `toArticle`.
- *   • Le reste (config du site, pages, prestations, zones d'intervention)
- *     → toujours dans les fichiers TypeScript de `src/content/`.
+ *   • Guides          → administrés dans Payload. Voir `toArticle`.
+ *   • Config du site  → administrée dans Payload (global « site-settings »),
+ *                       SAUF url/logo/nav/serviceAreas. Voir `toSiteConfig`.
+ *   • Pages, prestations → toujours dans les fichiers de `src/content/`.
  *
  * Les signatures ne changent pas quand une source bascule vers le CMS :
- * aucune page ni aucun composant n'a besoin d'être modifié. C'est ce qui a
- * permis de passer les guides sous Payload sans toucher à `/guides`.
+ * aucune page ni aucun composant n'a besoin d'être modifié.
  */
 
+/** URL exploitable d'un média Payload (upload) ; "" si absent. */
+function mediaUrl(v: unknown): string {
+  return typeof v === "object" && v !== null && "url" in v ? ((v as { url?: string }).url ?? "") : "";
+}
+
+/** Recompose un `SiteConfig` : global Payload + parties restées en code. */
+function toSiteConfig(s: SiteSetting): SiteConfig {
+  return {
+    // --- administré dans le back-office ---
+    name: s.name,
+    legalName: s.legalName,
+    slogan: s.slogan,
+    description: s.description,
+    phone: { display: s.phone.display, e164: s.phone.e164 },
+    email: s.email ?? undefined,
+    address: {
+      street: s.address.street,
+      postalCode: s.address.postalCode,
+      city: s.address.city,
+      country: s.address.country,
+    },
+    googleMapsUrl: s.googleMapsUrl,
+    sameAs: s.sameAs?.map((l) => l.url) ?? undefined,
+    geo: s.geo ? { lat: s.geo.lat, lng: s.geo.lng } : undefined,
+    hours: (s.hours ?? []).map(({ label, value }) => ({ label, value })),
+    openingHoursSpec: s.openingHoursSpec?.map(({ days, opens, closes }) => ({
+      days,
+      opens,
+      closes,
+    })),
+    serviceRadiusKm: s.serviceRadiusKm,
+    trustBadges: (s.trustBadges ?? []).map((b) => ({
+      icon: mediaUrl(b.icon),
+      label: b.label,
+      invert: b.invert ?? undefined,
+    })),
+    reviews: (s.reviews ?? []).map((r) => ({
+      author: r.author,
+      rating: r.rating,
+      text: r.text,
+      date: r.date ? r.date.slice(0, 10) : undefined,
+    })),
+    faq: (s.faq ?? []).map(({ question, answer }) => ({ question, answer })),
+
+    // --- volontairement NON éditables, réinjectés depuis src/content/site.ts ---
+    url: site.url, // lié au déploiement
+    logo: site.logo, // fichier du repo
+    serviceAreas: site.serviceAreas, // bloc suivant
+    nav: site.nav, // dérivé des zones + prestations
+  };
+}
+
 export async function getSiteConfig(): Promise<SiteConfig> {
-  return site;
+  const payload = await getPayload({ config });
+  const settings = await payload.findGlobal({ slug: "site-settings", depth: 1 });
+  return toSiteConfig(settings);
 }
 
 export async function getPage(slug: string): Promise<Page | null> {

@@ -10,6 +10,7 @@ import { buildConfig } from "payload";
 import { Guides } from "@/collections/Guides";
 import { Media } from "@/collections/Media";
 import { Users } from "@/collections/Users";
+import { SiteSettings } from "@/globals/SiteSettings";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -29,6 +30,7 @@ export default buildConfig({
     },
   },
   collections: [Guides, Media, Users],
+  globals: [SiteSettings],
   // Back-office en français (Eric est l'éditeur principal).
   i18n: {
     supportedLanguages: { fr },
@@ -43,6 +45,13 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || "",
     },
+    // Le schéma n'évolue QUE par migrations (`src/migrations/`), jamais par
+    // « push » automatique. Sans ça, tout script lancé sans
+    // NODE_ENV=production (un seed, par exemple) pousserait ses différences
+    // de schéma dans la base visée — y compris la PRODUCTION — et y
+    // inscrirait un marqueur `dev` qui fait ensuite poser une question
+    // interactive à `payload migrate`, bloquant le build.
+    push: false,
   }),
   // ⚠️ PAS de `sharp` ici, volontairement.
   //    Ses binaires natifs (libvips) vivent derrière les liens symboliques du
