@@ -5,6 +5,13 @@ import { serviceDetails } from "./services";
 const serviceAreas: ServiceArea[] = [
   { name: "Saintes", base: true },
   {
+    name: "Bussac-sur-Charente",
+    slug: "bussac-sur-charente",
+    distanceKm: 7,
+    intro:
+      "À quelques minutes au nord de Saintes, Bussac-sur-Charente fait partie de mes communes d’intervention rapide, du simple dépannage à la rénovation complète.",
+  },
+  {
     name: "Chaniers",
     slug: "chaniers",
     distanceKm: 5,
@@ -31,6 +38,48 @@ const serviceAreas: ServiceArea[] = [
     distanceKm: 4,
     intro:
       "Aux Gonds, à quelques minutes de mon atelier saintais, j’assure vos dépannages et vos travaux d’électricité avec la même exigence de qualité.",
+  },
+  {
+    name: "Pons",
+    slug: "pons",
+    distanceKm: 22,
+    intro:
+      "Au sud de Saintes, j’interviens à Pons et dans sa région pour vos installations électriques, vos mises aux normes et vos dépannages, chez les particuliers comme chez les professionnels.",
+  },
+  {
+    name: "Saint-Jean-d’Angély",
+    slug: "saint-jean-d-angely",
+    distanceKm: 27,
+    intro:
+      "À Saint-Jean-d’Angély, au nord-est de Saintes, je me déplace pour vos travaux d’électricité générale : installation, rénovation et remise aux normes de vos circuits.",
+  },
+  {
+    name: "Saint-Porchaire",
+    slug: "saint-porchaire",
+    distanceKm: 18,
+    intro:
+      "Sur l’axe entre Saintes et Rochefort, Saint-Porchaire fait partie de mes communes d’intervention pour vos dépannages et vos projets d’électricité.",
+  },
+  {
+    name: "Saint-Savinien",
+    slug: "saint-savinien",
+    distanceKm: 20,
+    intro:
+      "En bord de Charente, à Saint-Savinien, j’assure vos installations neuves, vos rénovations électriques et vos interventions de dépannage.",
+  },
+  {
+    name: "Saint-Vaize",
+    slug: "saint-vaize",
+    distanceKm: 11,
+    intro:
+      "Toute proche de Saintes, la commune de Saint-Vaize bénéficie de mes services d’électricité générale et d’un dépannage réactif.",
+  },
+  {
+    name: "Thénac",
+    slug: "thenac",
+    distanceKm: 8,
+    intro:
+      "À Thénac, aux portes de Saintes, j’interviens rapidement pour vos travaux d’électricité, vos mises en conformité et vos pannes du quotidien.",
   },
 ];
 
@@ -119,7 +168,7 @@ export const site: SiteConfig = {
     {
       question: "Dans quelles zones intervenez-vous ?",
       answer:
-        "J’interviens à Saintes et dans un rayon d’environ 30 km : Chaniers, Corme-Royal, Fontcouverte, Les Gonds et les communes alentour.",
+        "J’interviens à Saintes et dans un rayon d’environ 30 km : Chaniers, Fontcouverte, Les Gonds, Thénac, Bussac-sur-Charente, Saint-Vaize, Corme-Royal, Saint-Porchaire, Saint-Savinien, Pons, Saint-Jean-d’Angély et les communes alentour.",
     },
     {
       question: "Proposez-vous un dépannage en urgence ?",
