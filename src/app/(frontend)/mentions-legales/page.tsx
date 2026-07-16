@@ -24,6 +24,12 @@ export default async function MentionsLegalesPage() {
             <p className="mt-3">
               {site.legalName} — {site.address.street}, {site.address.postalCode} {site.address.city},{" "}
               {site.address.country}.
+              {site.siret && (
+                <>
+                  <br />
+                  SIRET : {site.siret}
+                </>
+              )}
               <br />
               Téléphone :{" "}
               <a href={`tel:${site.phone.e164}`} className="text-gold-600 underline">

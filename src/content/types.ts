@@ -183,6 +183,8 @@ export interface Article {
 export interface SiteConfig {
   name: string;
   legalName: string;
+  /** numéro SIRET (14 chiffres), affiché dans les mentions légales */
+  siret?: string;
   slogan: string;
   description: string;
   /** URL de production (utilisée pour les metadata/SEO) */

@@ -45,6 +45,32 @@ export const SiteSettings: GlobalConfig = {
             { name: "name", type: "text", label: "Nom commercial", required: true },
             { name: "legalName", type: "text", label: "Raison sociale", required: true },
             {
+              name: "siret",
+              type: "text",
+              label: "SIRET",
+              admin: {
+                description:
+                  "14 chiffres. Obligatoire dans les mentions légales. Saisissez-le avec ou sans espaces : la mise en forme est automatique.",
+              },
+              validate: (value: string | null | undefined) => {
+                if (!value) return true; // facultatif
+                const digits = value.replace(/\s/g, "");
+                if (!/^\d{14}$/.test(digits)) return "Le SIRET doit comporter exactement 14 chiffres.";
+                // Clé de contrôle (formule de Luhn) : détecte les fautes de frappe.
+                let sum = 0;
+                for (let i = 0; i < digits.length; i++) {
+                  let d = Number(digits[i]);
+                  if ((digits.length - 1 - i) % 2 === 1) {
+                    d *= 2;
+                    if (d > 9) d -= 9;
+                  }
+                  sum += d;
+                }
+                if (sum % 10 !== 0) return "Ce SIRET est invalide (clé de contrôle incorrecte). Vérifiez la saisie.";
+                return true;
+              },
+            },
+            {
               name: "slogan",
               type: "text",
               label: "Slogan",

@@ -821,6 +821,10 @@ export interface SiteSetting {
   name: string;
   legalName: string;
   /**
+   * 14 chiffres. Obligatoire dans les mentions légales. Saisissez-le avec ou sans espaces : la mise en forme est automatique.
+   */
+  siret?: string | null;
+  /**
    * Utilisé dans le titre des pages. Ex : « Électricien à Saintes ».
    */
   slogan: string;
@@ -941,6 +945,7 @@ export interface SiteSetting {
 export interface SiteSettingsSelect<T extends boolean = true> {
   name?: T;
   legalName?: T;
+  siret?: T;
   slogan?: T;
   description?: T;
   phone?:
