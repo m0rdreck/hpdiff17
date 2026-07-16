@@ -17,7 +17,6 @@ import { getPayload } from "payload";
 
 import { articles, articleOrder } from "../content/articles.js";
 import type { ArticleBlock } from "../content/types.js";
-import type { Guide } from "../payload-types.js";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.resolve(dirname, "../../public");
@@ -38,6 +37,29 @@ function toPayloadBlock(block: ArticleBlock) {
 
 async function seed() {
   const payload = await getPayload({ config });
+
+  /**
+   * `relatedServices` est une relation : Payload attend des ID, pas des slugs.
+   * Les prestations doivent donc être seedées AVANT les guides
+   * (`pnpm seed:services`), sinon les liens seraient silencieusement vides.
+   */
+  async function serviceIdsForSlugs(slugs: string[]): Promise<number[]> {
+    if (!slugs.length) return [];
+    const { docs } = await payload.find({
+      collection: "service-details",
+      where: { slug: { in: slugs } },
+      limit: 100,
+      depth: 0,
+    });
+    const found = docs.map((d) => d.slug);
+    const missing = slugs.filter((s) => !found.includes(s));
+    if (missing.length) {
+      throw new Error(
+        `Prestations introuvables : ${missing.join(", ")}. Lancez d'abord \`pnpm seed:services\`.`,
+      );
+    }
+    return docs.map((d) => d.id);
+  }
 
 
   // Les images du repo sont partagées entre plusieurs guides → on ne les
@@ -98,7 +120,7 @@ async function seed() {
         excerpt: article.excerpt,
         image: imageId,
         body: article.body.map(toPayloadBlock),
-        relatedServices: (article.relatedServices ?? []) as Guide["relatedServices"],
+        relatedServices: await serviceIdsForSlugs(article.relatedServices ?? []),
         faq: article.faq ?? [],
         seo: { title: article.seo.title, description: article.seo.description },
         _status: "published",

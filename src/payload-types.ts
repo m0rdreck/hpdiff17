@@ -375,9 +375,7 @@ export interface Guide {
   /**
    * Alimente le maillage interne et les liens en bas de guide.
    */
-  relatedServices?:
-    | ('tableau-electrique' | 'renovation-electrique' | 'mise-aux-normes-electriques' | 'installation-electrique')[]
-    | null;
+  relatedServices?: (number | ServiceDetail)[] | null;
   /**
    * Affichées en bas du guide et envoyées à Google (FAQ schema).
    */

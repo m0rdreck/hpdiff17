@@ -418,7 +418,13 @@ function toArticle(doc: Guide): Article {
           return { type: "p", text: block.text };
       }
     }),
-    relatedServices: doc.relatedServices ?? undefined,
+    // Relation : avec depth >= 1 Payload renvoie les prestations liées ; le
+    // type `Article` n'attend que leurs slugs.
+    relatedServices: doc.relatedServices?.length
+      ? doc.relatedServices
+          .map((r) => (typeof r === "object" && r !== null ? r.slug : null))
+          .filter((s): s is string => Boolean(s))
+      : undefined,
     faq: doc.faq?.map(({ question, answer }) => ({ question, answer })) ?? undefined,
     seo: {
       title: doc.seo.title,
