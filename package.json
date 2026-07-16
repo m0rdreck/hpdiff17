@@ -20,7 +20,9 @@
     "seed:areas": "cross-env NODE_ENV=production tsx --env-file=.env src/scripts/seed-service-areas.ts",
     "seed:areas:prod": "dotenvx run -f .env.production.local -- cross-env NODE_ENV=production tsx src/scripts/seed-service-areas.ts",
     "seed:services": "cross-env NODE_ENV=production tsx --env-file=.env src/scripts/seed-service-details.ts",
-    "seed:services:prod": "dotenvx run -f .env.production.local -- cross-env NODE_ENV=production tsx src/scripts/seed-service-details.ts"
+    "seed:services:prod": "dotenvx run -f .env.production.local -- cross-env NODE_ENV=production tsx src/scripts/seed-service-details.ts",
+    "seed:pages": "cross-env NODE_ENV=production tsx --env-file=.env src/scripts/seed-pages.ts",
+    "seed:pages:prod": "dotenvx run -f .env.production.local -- cross-env NODE_ENV=production tsx src/scripts/seed-pages.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.86.0",

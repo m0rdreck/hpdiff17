@@ -1,9 +1,9 @@
 import config from "@payload-config";
 import { getPayload } from "payload";
 import { site } from "@/content/site";
-import { pages } from "@/content/pages";
 import type {
   Guide,
+  Page as PayloadPage,
   ServiceArea as PayloadServiceArea,
   ServiceDetail as PayloadServiceDetail,
   SiteSetting,
@@ -26,8 +26,12 @@ import type {
  * État actuel :
  *   • Guides          → administrés dans Payload. Voir `toArticle`.
  *   • Config du site  → global « site-settings », SAUF url/logo/nav.
- *   • Zones d'intervention → collection « service-areas ». Voir `toServiceArea`.
- *   • Pages, prestations → toujours dans les fichiers de `src/content/`.
+ *   • Zones d'intervention → collection « service-areas ».
+ *   • Prestations     → collection « service-details ».
+ *   • Pages principales → collection « pages ».
+ *
+ * Ne restent en code que ce qui n'a pas vocation à être édité : `url`,
+ * `logo` et le menu (dérivé des zones et des prestations).
  *
  * Les signatures ne changent pas quand une source bascule vers le CMS :
  * aucune page ni aucun composant n'a besoin d'être modifié.
@@ -135,12 +139,102 @@ export async function getSiteConfig(): Promise<SiteConfig> {
   return toSiteConfig(settings, areas, services);
 }
 
+/* ------------------------------------------------------------------ *
+ * Pages principales (accueil, dépannage, électricité générale)
+ * — administrées depuis le back-office.
+ * ------------------------------------------------------------------ */
+
+/**
+ * Boutons du bandeau.
+ *
+ * Le back-office ne laisse choisir qu'un libellé et une destination
+ * (« Appeler » ou « Formulaire ») : le lien, le style et l'icône sont dérivés
+ * ici. Eric ne peut donc pas saisir une URL cassée, et le numéro appelé suit
+ * la configuration du site — il était codé en dur auparavant.
+ * Le premier bouton est mis en avant, le second en contour.
+ */
+function pageCtas(
+  ctas: { label: string; target: "phone" | "contact" }[] | null | undefined,
+  phoneE164: string,
+): Cta[] {
+  return (ctas ?? []).map((c, i) => ({
+    label: c.label,
+    href: c.target === "phone" ? `tel:${phoneE164}` : "/contact",
+    variant: i === 0 ? ("primary" as const) : ("outline" as const),
+    icon: c.target === "phone" ? ("phone" as const) : ("arrow" as const),
+  }));
+}
+
+/** Traduit un document Payload `pages` en `Page`. */
+function toPage(doc: PayloadPage, phoneE164: string): Page {
+  return {
+    slug: doc.slug,
+    seo: { title: doc.seo.title, description: doc.seo.description, path: doc.slug },
+    hero: {
+      eyebrow: doc.hero.eyebrow ?? undefined,
+      title: doc.hero.title,
+      highlight: doc.hero.highlight ?? undefined,
+      text: doc.hero.text,
+      image: mediaUrl(doc.hero.image),
+      imageAlt: mediaAlt(doc.hero.image) || doc.title,
+      ctas: pageCtas(doc.hero.ctas, phoneE164),
+    },
+    // Un encart sans titre n'est pas affiché : c'est le réglage prévu côté
+    // back-office pour masquer la section.
+    intro: doc.intro?.title
+      ? { title: doc.intro.title, body: doc.intro.body ?? "" }
+      : undefined,
+    features: doc.features?.length
+      ? doc.features.map((f, i) => ({
+          id: `feature-${i}`,
+          title: f.title,
+          body: f.body,
+          image: mediaUrl(f.image),
+          imageAlt: mediaAlt(f.image) || f.title,
+          imageSide: (f.imageSide ?? "left") as "left" | "right",
+          cta:
+            f.ctaLabel && f.ctaHref
+              ? { label: f.ctaLabel, href: f.ctaHref, variant: "primary", icon: "arrow" }
+              : undefined,
+        }))
+      : undefined,
+    servicesTitle: doc.servicesTitle ?? undefined,
+    servicesIntro: doc.servicesIntro ?? undefined,
+    services: doc.services?.length
+      ? doc.services.map((s) => ({
+          title: s.title,
+          description: s.description,
+          image: mediaUrl(s.image),
+          imageAlt: mediaAlt(s.image) || s.title,
+        }))
+      : undefined,
+  };
+}
+
 export async function getPage(slug: string): Promise<Page | null> {
-  return pages[slug] ?? null;
+  const payload = await getPayload({ config });
+  const [{ docs }, phone] = await Promise.all([
+    payload.find({
+      collection: "pages",
+      where: { slug: { equals: slug } },
+      limit: 1,
+      depth: 1,
+      overrideAccess: false,
+    }),
+    getPhoneE164(),
+  ]);
+  return docs[0] ? toPage(docs[0], phone) : null;
 }
 
 export async function getAllPageSlugs(): Promise<string[]> {
-  return Object.keys(pages);
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "pages",
+    limit: 50,
+    depth: 0,
+    overrideAccess: false,
+  });
+  return docs.map((d) => d.slug);
 }
 
 /* ------------------------------------------------------------------ *

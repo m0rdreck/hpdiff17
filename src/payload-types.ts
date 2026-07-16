@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    pages: Page;
     'service-details': ServiceDetail;
     guides: Guide;
     'service-areas': ServiceArea;
@@ -79,6 +80,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    pages: PagesSelect<false> | PagesSelect<true>;
     'service-details': ServiceDetailsSelect<false> | ServiceDetailsSelect<true>;
     guides: GuidesSelect<false> | GuidesSelect<true>;
     'service-areas': ServiceAreasSelect<false> | ServiceAreasSelect<true>;
@@ -126,6 +128,120 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * Contenu des trois pages principales du site. Pour créer une page, utilisez « Prestations ».
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  /**
+   * Repère interne, non affiché sur le site. Ex : « Accueil ».
+   */
+  title: string;
+  /**
+   * Fixé par le code : cette page est adossée à une route précise.
+   */
+  slug: string;
+  hero: {
+    eyebrow?: string | null;
+    /**
+     * Première partie du titre, en blanc.
+     */
+    title: string;
+    /**
+     * Suite du titre, affichée en doré.
+     */
+    highlight?: string | null;
+    text: string;
+    image: number | Media;
+    /**
+     * Deux boutons au maximum. Le premier est mis en avant. Le lien est automatique : « Appeler » utilise le téléphone de la configuration du site, « Formulaire » renvoie vers la page contact.
+     */
+    ctas?:
+      | {
+          /**
+           * Ex : « Appelez-moi maintenant ».
+           */
+          label: string;
+          target: 'phone' | 'contact';
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Laisser le titre vide pour ne pas afficher la section.
+   */
+  intro?: {
+    title?: string | null;
+    body?: string | null;
+  };
+  /**
+   * Sections alternées image/texte.
+   */
+  features?:
+    | {
+        title: string;
+        body: string;
+        image: number | Media;
+        imageSide?: ('left' | 'right') | null;
+        /**
+         * Laisser vide pour ne pas afficher de bouton.
+         */
+        ctaLabel?: string | null;
+        /**
+         * Ex : /depannage-electrique
+         */
+        ctaHref?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  servicesTitle?: string | null;
+  servicesIntro?: string | null;
+  services?:
+    | {
+        title: string;
+        description: string;
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  seo: {
+    /**
+     * Idéalement 50-60 caractères.
+     */
+    title: string;
+    /**
+     * Idéalement 150-160 caractères.
+     */
+    description: string;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * Décrit l'image pour les lecteurs d'écran et Google. Ex : « Tableau électrique remis aux normes à Saintes ».
+   */
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * Pages détaillées listées sous « Électricité générale ». En créer une ajoute sa page et son entrée de menu.
@@ -198,28 +314,6 @@ export interface ServiceDetail {
   };
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  /**
-   * Décrit l'image pour les lecteurs d'écran et Google. Ex : « Tableau électrique remis aux normes à Saintes ».
-   */
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * Articles de conseil publiés sur /guides. Un guide enregistré en brouillon n'apparaît pas sur le site.
@@ -390,6 +484,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
         relationTo: 'service-details';
         value: number | ServiceDetail;
       } | null)
@@ -450,6 +548,65 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        highlight?: T;
+        text?: T;
+        image?: T;
+        ctas?:
+          | T
+          | {
+              label?: T;
+              target?: T;
+              id?: T;
+            };
+      };
+  intro?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+      };
+  features?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        image?: T;
+        imageSide?: T;
+        ctaLabel?: T;
+        ctaHref?: T;
+        id?: T;
+      };
+  servicesTitle?: T;
+  servicesIntro?: T;
+  services?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
