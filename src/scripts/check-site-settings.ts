@@ -35,5 +35,19 @@ console.log("  liens     :", (s.sameAs ?? []).length);
 const guides = await payload.count({ collection: "guides" });
 console.log("  guides    :", guides.totalDocs);
 
-console.log(iconsOk ? "\n✓ prêt pour le déploiement" : "\n✗ icônes manquantes");
-process.exit(iconsOk ? 0 : 1);
+const areas = await payload.find({ collection: "service-areas", limit: 0, depth: 0 });
+const withPage = areas.docs.filter((a) => a.slug);
+const base = areas.docs.filter((a) => a.base);
+console.log(
+  "  communes  :",
+  areas.totalDocs,
+  `(${withPage.length} avec page, ${base.length} de rattachement)`,
+);
+
+// Une commune sans slug ET sans être « base » n'aurait pas de page : anomalie.
+const orphans = areas.docs.filter((a) => !a.slug && !a.base).map((a) => a.name);
+if (orphans.length) console.log("  ⚠️ sans slug ni rattachement :", orphans.join(", "));
+
+const ok = iconsOk && areas.totalDocs > 0 && !orphans.length;
+console.log(ok ? "\n✓ prêt pour le déploiement" : "\n✗ problème détecté");
+process.exit(ok ? 0 : 1);
