@@ -2,7 +2,6 @@ import config from "@payload-config";
 import { getPayload } from "payload";
 import { site } from "@/content/site";
 import { pages } from "@/content/pages";
-import { serviceDetails } from "@/content/services";
 import type {
   Guide,
   ServiceArea as PayloadServiceArea,
