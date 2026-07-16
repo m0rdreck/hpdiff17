@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { getServiceDetail, getSiteConfig } from "@/lib/content";
-import { serviceDetails } from "@/content/services";
+import { getAllServiceDetails, getServiceDetail, getSiteConfig } from "@/lib/content";
 import { Hero } from "@/components/sections/Hero";
 import { IntroBlock } from "@/components/sections/IntroBlock";
 import { ContactCta } from "@/components/sections/ContactCta";
@@ -12,12 +11,15 @@ import { FaqSchema, BreadcrumbSchema } from "@/components/StructuredData";
 import { notFound } from "next/navigation";
 
 export async function ServiceDetailPage({ slug }: { slug: string }) {
-  const [site, service] = await Promise.all([getSiteConfig(), getServiceDetail(slug)]);
+  const [site, service, all] = await Promise.all([
+    getSiteConfig(),
+    getServiceDetail(slug),
+    getAllServiceDetails(),
+  ]);
   if (!service) notFound();
 
-  const related = (service.related ?? [])
-    .map((s) => serviceDetails[s])
-    .filter(Boolean);
+  const bySlug = new Map(all.map((s) => [s.slug, s]));
+  const related = (service.related ?? []).map((s) => bySlug.get(s)).filter(Boolean) as typeof all;
 
   return (
     <>

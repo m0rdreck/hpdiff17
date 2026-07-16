@@ -6,11 +6,13 @@ import { serviceDetails } from "@/content/services";
 import type {
   Guide,
   ServiceArea as PayloadServiceArea,
+  ServiceDetail as PayloadServiceDetail,
   SiteSetting,
 } from "@/payload-types";
 import type {
   Article,
   ArticleBlock,
+  Cta,
   NavItem,
   Page,
   ServiceArea,
@@ -37,6 +39,11 @@ function mediaUrl(v: unknown): string {
   return typeof v === "object" && v !== null && "url" in v ? ((v as { url?: string }).url ?? "") : "";
 }
 
+/** Texte alternatif d'un média Payload ; "" si absent. */
+function mediaAlt(v: unknown): string {
+  return typeof v === "object" && v !== null && "alt" in v ? ((v as { alt?: string }).alt ?? "") : "";
+}
+
 /**
  * Construit le menu principal.
  *
@@ -45,17 +52,14 @@ function mediaUrl(v: unknown): string {
  * back-office la fait apparaître ici toute seule, et personne ne peut casser
  * la navigation depuis l'admin.
  */
-function buildNav(areas: ServiceArea[]): NavItem[] {
+function buildNav(areas: ServiceArea[], services: { label: string; href: string }[]): NavItem[] {
   return [
     { label: "Accueil", href: "/" },
     { label: "Dépannage électrique", href: "/depannage-electrique" },
     {
       label: "Électricité générale",
       href: "/electricite-generale",
-      children: Object.values(serviceDetails).map((s) => ({
-        label: `${s.hero.title} ${s.hero.highlight ?? ""}`.trim(),
-        href: `/${s.slug}`,
-      })),
+      children: services,
     },
     {
       label: "Zones d’intervention",
@@ -70,7 +74,11 @@ function buildNav(areas: ServiceArea[]): NavItem[] {
 }
 
 /** Recompose un `SiteConfig` : global Payload + parties restées en code. */
-function toSiteConfig(s: SiteSetting, areas: ServiceArea[]): SiteConfig {
+function toSiteConfig(
+  s: SiteSetting,
+  areas: ServiceArea[],
+  services: { label: string; href: string }[],
+): SiteConfig {
   return {
     // --- administré dans le back-office ---
     name: s.name,
@@ -112,7 +120,7 @@ function toSiteConfig(s: SiteSetting, areas: ServiceArea[]): SiteConfig {
     serviceAreas: areas,
 
     // --- volontairement NON éditables ---
-    nav: buildNav(areas), // dérivé des zones + prestations
+    nav: buildNav(areas, services), // dérivé des zones + prestations
     url: site.url, // lié au déploiement
     logo: site.logo, // fichier du repo
   };
@@ -120,11 +128,12 @@ function toSiteConfig(s: SiteSetting, areas: ServiceArea[]): SiteConfig {
 
 export async function getSiteConfig(): Promise<SiteConfig> {
   const payload = await getPayload({ config });
-  const [settings, areas] = await Promise.all([
+  const [settings, areas, services] = await Promise.all([
     payload.findGlobal({ slug: "site-settings", depth: 1 }),
     getAllServiceAreas(),
+    getServiceNavItems(),
   ]);
-  return toSiteConfig(settings, areas);
+  return toSiteConfig(settings, areas, services);
 }
 
 export async function getPage(slug: string): Promise<Page | null> {
@@ -183,13 +192,104 @@ export async function getCityBySlug(slug: string): Promise<ServiceArea | null> {
   return docs[0] ? toServiceArea(docs[0]) : null;
 }
 
-/** Pages de service détaillées. */
+/* ------------------------------------------------------------------ *
+ * Prestations (« Électricité générale ») — administrées dans le back-office.
+ * ------------------------------------------------------------------ */
+
+/**
+ * Boutons du bandeau des pages prestations.
+ *
+ * Volontairement DÉRIVÉS et non éditables : ils étaient identiques sur les 4
+ * pages. Surtout, le numéro vient maintenant de la configuration du site —
+ * avant, il était codé en dur, donc changer le téléphone dans le back-office
+ * n'aurait pas mis à jour le bouton « Appelez ».
+ */
+function serviceCtas(phoneE164: string): Cta[] {
+  return [
+    { label: "Demandez votre devis", href: "/contact", variant: "primary", icon: "arrow" },
+    { label: "Appelez votre électricien", href: `tel:${phoneE164}`, variant: "outline", icon: "phone" },
+  ];
+}
+
+/** Traduit un document Payload `service-details` en `ServiceDetail`. */
+function toServiceDetail(doc: PayloadServiceDetail, phoneE164: string): ServiceDetail {
+  return {
+    slug: doc.slug,
+    seo: {
+      title: doc.seo.title,
+      description: doc.seo.description,
+      path: `/${doc.slug}`,
+    },
+    hero: {
+      eyebrow: doc.hero.eyebrow ?? undefined,
+      title: doc.hero.title,
+      highlight: doc.hero.highlight ?? undefined,
+      text: doc.hero.text,
+      image: mediaUrl(doc.hero.image),
+      imageAlt: mediaAlt(doc.hero.image) || doc.navLabel,
+      ctas: serviceCtas(phoneE164),
+    },
+    intro: doc.intro,
+    benefits: (doc.benefits ?? []).map(({ title, text }) => ({ title, text })),
+    steps: doc.steps?.length ? doc.steps.map(({ title, text }) => ({ title, text })) : undefined,
+    // `related` est une relation : avec depth >= 1 Payload renvoie les
+    // documents liés, dont on ne garde que le slug (forme attendue par le type).
+    related: doc.related?.length
+      ? doc.related
+          .map((r) => (typeof r === "object" && r !== null ? r.slug : null))
+          .filter((s): s is string => Boolean(s))
+      : undefined,
+  };
+}
+
+/** Téléphone au format international, depuis la configuration du site. */
+async function getPhoneE164(): Promise<string> {
+  const payload = await getPayload({ config });
+  const s = await payload.findGlobal({ slug: "site-settings", depth: 0 });
+  return s.phone.e164;
+}
+
 export async function getServiceDetail(slug: string): Promise<ServiceDetail | null> {
-  return serviceDetails[slug] ?? null;
+  const payload = await getPayload({ config });
+  const [{ docs }, phone] = await Promise.all([
+    payload.find({
+      collection: "service-details",
+      where: { slug: { equals: slug } },
+      limit: 1,
+      depth: 1,
+      overrideAccess: false,
+    }),
+    getPhoneE164(),
+  ]);
+  return docs[0] ? toServiceDetail(docs[0], phone) : null;
 }
 
 export async function getAllServiceDetails(): Promise<ServiceDetail[]> {
-  return Object.values(serviceDetails);
+  const payload = await getPayload({ config });
+  const [{ docs }, phone] = await Promise.all([
+    payload.find({
+      collection: "service-details",
+      sort: "order",
+      limit: 100,
+      depth: 1,
+      overrideAccess: false,
+    }),
+    getPhoneE164(),
+  ]);
+  return docs.map((d) => toServiceDetail(d, phone));
+}
+
+/** Libellés courts des prestations, pour le menu et le pied de page. */
+export async function getServiceNavItems(): Promise<{ label: string; href: string }[]> {
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "service-details",
+    sort: "order",
+    limit: 100,
+    depth: 0,
+    overrideAccess: false,
+  });
+  return docs.map((d) => ({ label: d.navLabel, href: `/${d.slug}` }));
 }
 
 /* ------------------------------------------------------------------ *

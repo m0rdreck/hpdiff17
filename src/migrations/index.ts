@@ -1,6 +1,7 @@
 import * as migration_20260716_162129_initial from './20260716_162129_initial';
 import * as migration_20260716_183954_site_settings from './20260716_183954_site_settings';
 import * as migration_20260716_205643_service_areas from './20260716_205643_service_areas';
+import * as migration_20260716_211715_service_details from './20260716_211715_service_details';
 
 export const migrations = [
   {
@@ -16,6 +17,11 @@ export const migrations = [
   {
     up: migration_20260716_205643_service_areas.up,
     down: migration_20260716_205643_service_areas.down,
-    name: '20260716_205643_service_areas'
+    name: '20260716_205643_service_areas',
+  },
+  {
+    up: migration_20260716_211715_service_details.up,
+    down: migration_20260716_211715_service_details.down,
+    name: '20260716_211715_service_details'
   },
 ];

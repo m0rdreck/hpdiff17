@@ -1,12 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@/components/ui/Icon";
-import { serviceDetails } from "@/content/services";
+import { getAllServiceDetails } from "@/lib/content";
 import type { SiteConfig } from "@/content/types";
 
-export function Footer({ site }: { site: SiteConfig }) {
+export async function Footer({ site }: { site: SiteConfig }) {
   const year = 2026;
-  const services = Object.values(serviceDetails);
+  const services = await getAllServiceDetails();
   return (
     <footer className="bg-navy-950 text-white/70">
       <div className="container-page grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.1fr]">

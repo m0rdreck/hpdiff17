@@ -32,7 +32,11 @@ function revalidateGuide(slug?: string) {
   }
 }
 
-/** Slugs des pages de service (pour le maillage interne). */
+/**
+ * Slugs des pages de prestation (pour le maillage interne des guides).
+ * À synchroniser si une prestation est ajoutée ou renommée dans la
+ * collection « service-details ».
+ */
 const SERVICE_SLUGS = [
   { label: "Tableau électrique", value: "tableau-electrique" },
   { label: "Rénovation électrique", value: "renovation-electrique" },
@@ -181,6 +185,12 @@ export const Guides: CollectionConfig = {
       ],
     },
     {
+      // ⚠️ Liste FIGÉE, à tenir à jour à la main si une prestation est créée
+      //    ou renommée dans « Prestations ».
+      //    Passer ce champ en `relationship` serait plus juste, MAIS la
+      //    migration supprimerait la table qui porte les liens actuels : les
+      //    guides existants perdraient leurs prestations liées. La conversion
+      //    demande donc une migration de données dédiée — à faire à part.
       name: "relatedServices",
       type: "select",
       label: "Prestations liées",

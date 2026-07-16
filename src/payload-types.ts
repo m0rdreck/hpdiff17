@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    'service-details': ServiceDetail;
     guides: Guide;
     'service-areas': ServiceArea;
     media: Media;
@@ -78,6 +79,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    'service-details': ServiceDetailsSelect<false> | ServiceDetailsSelect<true>;
     guides: GuidesSelect<false> | GuidesSelect<true>;
     'service-areas': ServiceAreasSelect<false> | ServiceAreasSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -124,6 +126,100 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * Pages détaillées listées sous « Électricité générale ». En créer une ajoute sa page et son entrée de menu.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-details".
+ */
+export interface ServiceDetail {
+  id: number;
+  /**
+   * Libellé court affiché dans le menu et le pied de page. Ex : « Tableau électrique ».
+   */
+  navLabel: string;
+  /**
+   * Adresse de la page : /mon-slug. Sans accent. À NE PLUS MODIFIER une fois la page indexée par Google.
+   */
+  slug: string;
+  /**
+   * Les plus petits nombres apparaissent en premier.
+   */
+  order: number;
+  hero: {
+    /**
+     * Petite ligne au-dessus du titre. Ex : « Électricité générale · Saintes ».
+     */
+    eyebrow?: string | null;
+    /**
+     * Première partie du titre, en blanc. Ex : « Tableau ».
+     */
+    title: string;
+    /**
+     * Suite du titre, affichée en doré. Ex : « électrique ».
+     */
+    highlight?: string | null;
+    text: string;
+    image: number | Media;
+  };
+  intro: string;
+  /**
+   * Grille de cartes présentant ce que couvre l'intervention.
+   */
+  benefits: {
+    title: string;
+    text: string;
+    id?: string | null;
+  }[];
+  /**
+   * Liste numérotée, facultative. Laissez vide pour ne pas afficher la section.
+   */
+  steps?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Liens affichés en bas de page (maillage interne). Ne vous sélectionnez pas vous-même.
+   */
+  related?: (number | ServiceDetail)[] | null;
+  seo: {
+    /**
+     * Idéalement 50-60 caractères.
+     */
+    title: string;
+    /**
+     * Idéalement 150-160 caractères.
+     */
+    description: string;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * Décrit l'image pour les lecteurs d'écran et Google. Ex : « Tableau électrique remis aux normes à Saintes ».
+   */
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * Articles de conseil publiés sur /guides. Un guide enregistré en brouillon n'apparaît pas sur le site.
@@ -213,28 +309,6 @@ export interface Guide {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  /**
-   * Décrit l'image pour les lecteurs d'écran et Google. Ex : « Tableau électrique remis aux normes à Saintes ».
-   */
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
  * Communes où vous intervenez. Chacune obtient sa page /electricien/<slug> et apparaît dans le menu.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -316,6 +390,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'service-details';
+        value: number | ServiceDetail;
+      } | null)
+    | ({
         relationTo: 'guides';
         value: number | Guide;
       } | null)
@@ -372,6 +450,48 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-details_select".
+ */
+export interface ServiceDetailsSelect<T extends boolean = true> {
+  navLabel?: T;
+  slug?: T;
+  order?: T;
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        title?: T;
+        highlight?: T;
+        text?: T;
+        image?: T;
+      };
+  intro?: T;
+  benefits?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  steps?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  related?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { serviceDetails } from "@/content/services";
+import { getAllServiceDetails } from "@/lib/content";
 import { Reveal } from "@/components/ui/Reveal";
 import { Icon } from "@/components/ui/Icon";
 
 /** Grille de liens vers les pages de service détaillées (cluster SEO). */
-export function ServiceLinks({
+export async function ServiceLinks({
   title = "Mes prestations détaillées",
   intro,
   tone = "white",
@@ -13,7 +13,7 @@ export function ServiceLinks({
   intro?: string;
   tone?: "white" | "light";
 }) {
-  const services = Object.values(serviceDetails);
+  const services = await getAllServiceDetails();
   return (
     <section className={`${tone === "light" ? "bg-navy-25" : "bg-white"} py-16 sm:py-24`}>
       <div className="container-page">

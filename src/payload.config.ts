@@ -10,6 +10,7 @@ import { buildConfig } from "payload";
 import { Guides } from "@/collections/Guides";
 import { Media } from "@/collections/Media";
 import { ServiceAreas } from "@/collections/ServiceAreas";
+import { ServiceDetails } from "@/collections/ServiceDetails";
 import { Users } from "@/collections/Users";
 import { SiteSettings } from "@/globals/SiteSettings";
 
@@ -30,7 +31,7 @@ export default buildConfig({
       titleSuffix: "— HP Diff",
     },
   },
-  collections: [Guides, ServiceAreas, Media, Users],
+  collections: [ServiceDetails, Guides, ServiceAreas, Media, Users],
   globals: [SiteSettings],
   // Back-office en français (Eric est l'éditeur principal).
   i18n: {

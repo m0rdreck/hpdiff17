@@ -39,6 +39,7 @@ function toPayloadBlock(block: ArticleBlock) {
 async function seed() {
   const payload = await getPayload({ config });
 
+
   // Les images du repo sont partagées entre plusieurs guides → on ne les
   // téléverse qu'une fois chacune.
   const mediaCache = new Map<string, number>();
