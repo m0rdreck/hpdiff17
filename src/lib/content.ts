@@ -3,10 +3,15 @@ import { getPayload } from "payload";
 import { site } from "@/content/site";
 import { pages } from "@/content/pages";
 import { serviceDetails } from "@/content/services";
-import type { Guide, SiteSetting } from "@/payload-types";
+import type {
+  Guide,
+  ServiceArea as PayloadServiceArea,
+  SiteSetting,
+} from "@/payload-types";
 import type {
   Article,
   ArticleBlock,
+  NavItem,
   Page,
   ServiceArea,
   ServiceDetail,
@@ -19,8 +24,8 @@ import type {
  *
  * État actuel :
  *   • Guides          → administrés dans Payload. Voir `toArticle`.
- *   • Config du site  → administrée dans Payload (global « site-settings »),
- *                       SAUF url/logo/nav/serviceAreas. Voir `toSiteConfig`.
+ *   • Config du site  → global « site-settings », SAUF url/logo/nav.
+ *   • Zones d'intervention → collection « service-areas ». Voir `toServiceArea`.
  *   • Pages, prestations → toujours dans les fichiers de `src/content/`.
  *
  * Les signatures ne changent pas quand une source bascule vers le CMS :
@@ -32,8 +37,40 @@ function mediaUrl(v: unknown): string {
   return typeof v === "object" && v !== null && "url" in v ? ((v as { url?: string }).url ?? "") : "";
 }
 
+/**
+ * Construit le menu principal.
+ *
+ * Volontairement DÉRIVÉ, jamais éditable : les sous-menus se déduisent des
+ * zones d'intervention et des prestations. Ajouter une commune dans le
+ * back-office la fait apparaître ici toute seule, et personne ne peut casser
+ * la navigation depuis l'admin.
+ */
+function buildNav(areas: ServiceArea[]): NavItem[] {
+  return [
+    { label: "Accueil", href: "/" },
+    { label: "Dépannage électrique", href: "/depannage-electrique" },
+    {
+      label: "Électricité générale",
+      href: "/electricite-generale",
+      children: Object.values(serviceDetails).map((s) => ({
+        label: `${s.hero.title} ${s.hero.highlight ?? ""}`.trim(),
+        href: `/${s.slug}`,
+      })),
+    },
+    {
+      label: "Zones d’intervention",
+      href: "",
+      children: areas
+        .filter((a) => a.slug)
+        .map((a) => ({ label: `Électricien à ${a.name}`, href: `/electricien/${a.slug}` })),
+    },
+    { label: "Guides", href: "/guides" },
+    { label: "Contact", href: "/contact" },
+  ];
+}
+
 /** Recompose un `SiteConfig` : global Payload + parties restées en code. */
-function toSiteConfig(s: SiteSetting): SiteConfig {
+function toSiteConfig(s: SiteSetting, areas: ServiceArea[]): SiteConfig {
   return {
     // --- administré dans le back-office ---
     name: s.name,
@@ -71,18 +108,23 @@ function toSiteConfig(s: SiteSetting): SiteConfig {
     })),
     faq: (s.faq ?? []).map(({ question, answer }) => ({ question, answer })),
 
-    // --- volontairement NON éditables, réinjectés depuis src/content/site.ts ---
+    // --- administrées dans leur propre collection ---
+    serviceAreas: areas,
+
+    // --- volontairement NON éditables ---
+    nav: buildNav(areas), // dérivé des zones + prestations
     url: site.url, // lié au déploiement
     logo: site.logo, // fichier du repo
-    serviceAreas: site.serviceAreas, // bloc suivant
-    nav: site.nav, // dérivé des zones + prestations
   };
 }
 
 export async function getSiteConfig(): Promise<SiteConfig> {
   const payload = await getPayload({ config });
-  const settings = await payload.findGlobal({ slug: "site-settings", depth: 1 });
-  return toSiteConfig(settings);
+  const [settings, areas] = await Promise.all([
+    payload.findGlobal({ slug: "site-settings", depth: 1 }),
+    getAllServiceAreas(),
+  ]);
+  return toSiteConfig(settings, areas);
 }
 
 export async function getPage(slug: string): Promise<Page | null> {
@@ -93,13 +135,52 @@ export async function getAllPageSlugs(): Promise<string[]> {
   return Object.keys(pages);
 }
 
+/* ------------------------------------------------------------------ *
+ * Zones d'intervention — administrées depuis le back-office.
+ * ------------------------------------------------------------------ */
+
+/** Traduit un document Payload `service-areas` en `ServiceArea`. */
+function toServiceArea(doc: PayloadServiceArea): ServiceArea {
+  return {
+    name: doc.name,
+    slug: doc.slug ?? undefined,
+    base: doc.base ?? undefined,
+    distanceKm: doc.distanceKm ?? undefined,
+    intro: doc.intro ?? undefined,
+  };
+}
+
+/** Toutes les communes, Saintes (commune de rattachement) comprise. */
+async function getAllServiceAreas(): Promise<ServiceArea[]> {
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "service-areas",
+    sort: "name",
+    limit: 200,
+    depth: 0,
+    overrideAccess: false,
+  });
+  // La commune de rattachement d'abord, puis les autres par ordre alphabétique
+  // — l'ordre historique des puces et du menu.
+  const areas = docs.map(toServiceArea);
+  return [...areas.filter((a) => a.base), ...areas.filter((a) => !a.base)];
+}
+
 /** Villes disposant d'une page locale (celles ayant un `slug`). */
 export async function getCityAreas(): Promise<ServiceArea[]> {
-  return site.serviceAreas.filter((a) => a.slug);
+  return (await getAllServiceAreas()).filter((a) => a.slug);
 }
 
 export async function getCityBySlug(slug: string): Promise<ServiceArea | null> {
-  return site.serviceAreas.find((a) => a.slug === slug) ?? null;
+  const payload = await getPayload({ config });
+  const { docs } = await payload.find({
+    collection: "service-areas",
+    where: { slug: { equals: slug } },
+    limit: 1,
+    depth: 0,
+    overrideAccess: false,
+  });
+  return docs[0] ? toServiceArea(docs[0]) : null;
 }
 
 /** Pages de service détaillées. */

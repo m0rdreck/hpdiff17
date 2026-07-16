@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     guides: Guide;
+    'service-areas': ServiceArea;
     media: Media;
     users: User;
     'payload-kv': PayloadKv;
@@ -78,6 +79,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     guides: GuidesSelect<false> | GuidesSelect<true>;
+    'service-areas': ServiceAreasSelect<false> | ServiceAreasSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -233,6 +235,37 @@ export interface Media {
   focalY?: number | null;
 }
 /**
+ * Communes où vous intervenez. Chacune obtient sa page /electricien/<slug> et apparaît dans le menu.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-areas".
+ */
+export interface ServiceArea {
+  id: number;
+  /**
+   * Tel qu'affiché sur le site. Ex : « Saint-Jean-d'Angély ».
+   */
+  name: string;
+  /**
+   * À cocher UNIQUEMENT pour Saintes (siège de l'entreprise). Cette commune n'a pas de page dédiée : c'est déjà l'accueil du site.
+   */
+  base?: boolean | null;
+  /**
+   * Partie finale de l'adresse : /electricien/mon-slug. Sans accent ni apostrophe (ex : saint-jean-d-angely). À NE PLUS MODIFIER une fois la page indexée par Google.
+   */
+  slug?: string | null;
+  /**
+   * Affichée sur la page de la commune. Inutile pour la commune de rattachement.
+   */
+  distanceKm?: number | null;
+  /**
+   * Phrase d'introduction de la page, en haut. IMPORTANT pour le référencement : écrivez un texte UNIQUE pour chaque commune — un texte recopié d'une ville à l'autre est pénalisé par Google.
+   */
+  intro?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -285,6 +318,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'guides';
         value: number | Guide;
+      } | null)
+    | ({
+        relationTo: 'service-areas';
+        value: number | ServiceArea;
       } | null)
     | ({
         relationTo: 'media';
@@ -403,6 +440,19 @@ export interface GuidesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-areas_select".
+ */
+export interface ServiceAreasSelect<T extends boolean = true> {
+  name?: T;
+  base?: T;
+  slug?: T;
+  distanceKm?: T;
+  intro?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

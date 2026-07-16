@@ -16,7 +16,9 @@
     "seed:guides:prod": "dotenvx run -f .env.production.local -- cross-env NODE_ENV=production tsx src/scripts/seed-guides.ts",
     "generate:types": "pnpm payload generate:types",
     "seed:guides": "cross-env NODE_ENV=production tsx --env-file=.env src/scripts/seed-guides.ts",
-    "seed:site": "cross-env NODE_ENV=production tsx --env-file=.env src/scripts/seed-site-settings.ts"
+    "seed:site": "cross-env NODE_ENV=production tsx --env-file=.env src/scripts/seed-site-settings.ts",
+    "seed:areas": "cross-env NODE_ENV=production tsx --env-file=.env src/scripts/seed-service-areas.ts",
+    "seed:areas:prod": "dotenvx run -f .env.production.local -- cross-env NODE_ENV=production tsx src/scripts/seed-service-areas.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.86.0",
