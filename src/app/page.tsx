@@ -4,11 +4,14 @@ import { Hero } from "@/components/sections/Hero";
 import { TrustBadges } from "@/components/sections/TrustBadges";
 import { FeatureSection } from "@/components/sections/FeatureSection";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
+import { ServiceLinks } from "@/components/sections/ServiceLinks";
+import { GuidesTeaser } from "@/components/sections/GuidesTeaser";
 import { Reviews } from "@/components/sections/Reviews";
 import { ServiceAreaSection } from "@/components/sections/ServiceAreaSection";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { Faq } from "@/components/sections/Faq";
 import { Reveal } from "@/components/ui/Reveal";
+import { getAllArticles } from "@/lib/content";
 import { FaqSchema } from "@/components/StructuredData";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -21,7 +24,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [site, page] = await Promise.all([getSiteConfig(), getPage("/")]);
+  const [site, page, articles] = await Promise.all([
+    getSiteConfig(),
+    getPage("/"),
+    getAllArticles(),
+  ]);
   if (!page) return null;
 
   const [depannageFeature, quiSuisJe] = page.features ?? [];
@@ -41,7 +48,15 @@ export default async function HomePage() {
         tone="light"
       />
 
-      {quiSuisJe && <FeatureSection feature={quiSuisJe} tone="white" />}
+      <ServiceLinks
+        title="Mes prestations détaillées"
+        intro="Découvrez le détail de mes interventions en électricité, chacune adaptée à un besoin précis."
+        tone="white"
+      />
+
+      {quiSuisJe && <FeatureSection feature={quiSuisJe} tone="light" />}
+
+      <GuidesTeaser articles={articles} tone="white" />
 
       <Reviews reviews={site.reviews} />
       <ServiceAreaSection site={site} />

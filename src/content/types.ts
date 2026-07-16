@@ -145,6 +145,40 @@ export interface ServiceDetail {
   related?: string[];
 }
 
+/**
+ * Bloc de contenu d'un article (guide/conseil).
+ * Modèle volontairement simple → facile à mapper depuis un CMS plus tard.
+ */
+export type ArticleBlock =
+  | { type: "p"; text: string }
+  | { type: "h2"; text: string }
+  | { type: "ul"; items: string[] }
+  | { type: "callout"; text: string };
+
+/** Article de la section « Guides & conseils » (contenu SEO éditorial). */
+export interface Article {
+  slug: string;
+  seo: Seo;
+  /** titre affiché (peut différer du <title> SEO) */
+  title: string;
+  /** chapô / résumé (liste + meta + partages) */
+  excerpt: string;
+  /** libellé de catégorie, ex: "Sécurité", "Budget" */
+  category: string;
+  /** temps de lecture estimé, en minutes */
+  readingMinutes: number;
+  /** date de mise à jour, ISO "AAAA-MM-JJ" (schema + affichage) */
+  updated: string;
+  image: string;
+  imageAlt: string;
+  /** corps de l'article, en blocs */
+  body: ArticleBlock[];
+  /** slugs de services liés (maillage interne + CTA) */
+  relatedServices?: string[];
+  /** questions fréquentes propres à l'article (FAQ schema) */
+  faq?: FaqItem[];
+}
+
 /** Configuration globale, partagée par toutes les pages. */
 export interface SiteConfig {
   name: string;

@@ -41,7 +41,7 @@ export function Header({ site }: { site: SiteConfig }) {
     >
       <div className="container-page flex items-center justify-between gap-4 py-2.5">
         <Link href="/" className="flex items-center gap-2.5" aria-label={`${site.name} — accueil`}>
-          <Image src={site.logo} alt={site.name} width={130} height={125} priority className="h-14 w-auto" />
+          <Image src={site.logo} alt={site.name} width={58} height={56} priority className="h-14 w-[58px] shrink-0" />
         </Link>
 
         {/* Navigation desktop */}

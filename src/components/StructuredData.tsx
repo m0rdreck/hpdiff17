@@ -1,4 +1,4 @@
-import type { SiteConfig, FaqItem } from "@/content/types";
+import type { SiteConfig, FaqItem, Article } from "@/content/types";
 
 /**
  * Données structurées Schema.org (JSON-LD) pour le référencement local.
@@ -100,6 +100,61 @@ export function FaqSchema({ items }: { items: FaqItem[] }) {
       name: item.question,
       acceptedAnswer: { "@type": "Answer", text: item.answer },
     })),
+  };
+  return (
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  );
+}
+
+/**
+ * Fil d'Ariane structuré (BreadcrumbList) — aide Google à comprendre la
+ * hiérarchie et à afficher le chemin dans les résultats.
+ * `items` : du plus général au plus précis, ex.
+ *   [{ name: "Accueil", path: "/" }, { name: "Guides", path: "/guides" }, …]
+ */
+export function BreadcrumbSchema({
+  site,
+  items,
+}: {
+  site: SiteConfig;
+  items: { name: string; path: string }[];
+}) {
+  if (items.length < 2) return null;
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: new URL(item.path, site.url).toString(),
+    })),
+  };
+  return (
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+  );
+}
+
+/** Schéma BlogPosting — à placer sur les pages d'article (guides). */
+export function ArticleSchema({ site, article }: { site: SiteConfig; article: Article }) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: article.title,
+    description: article.excerpt,
+    image: `${site.url}${article.image}`,
+    datePublished: article.updated,
+    dateModified: article.updated,
+    author: { "@type": "Organization", name: site.name, url: site.url },
+    publisher: {
+      "@type": "Organization",
+      name: site.name,
+      logo: { "@type": "ImageObject", url: `${site.url}${site.logo}` },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": new URL(article.seo.path, site.url).toString(),
+    },
   };
   return (
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />

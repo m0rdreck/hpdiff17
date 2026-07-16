@@ -15,9 +15,9 @@ export function Footer({ site }: { site: SiteConfig }) {
           <Image
             src={site.logo}
             alt={site.name}
-            width={130}
-            height={125}
-            className="h-14 w-auto"
+            width={58}
+            height={56}
+            className="h-14 w-[58px] shrink-0"
           />
           <p className="mt-4 max-w-xs text-sm leading-relaxed">{site.description}</p>
           <div className="mt-5 flex items-center gap-3">

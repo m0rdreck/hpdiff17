@@ -5,11 +5,12 @@ import { Hero } from "@/components/sections/Hero";
 import { TrustBadges } from "@/components/sections/TrustBadges";
 import { IntroBlock } from "@/components/sections/IntroBlock";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
+import { ServiceLinks } from "@/components/sections/ServiceLinks";
 import { ServiceAreaSection } from "@/components/sections/ServiceAreaSection";
 import { ContactCta } from "@/components/sections/ContactCta";
 import { Faq } from "@/components/sections/Faq";
 import { Reveal } from "@/components/ui/Reveal";
-import { FaqSchema } from "@/components/StructuredData";
+import { FaqSchema, BreadcrumbSchema } from "@/components/StructuredData";
 import type { Hero as HeroContent } from "@/content/types";
 
 // Génère une page statique par commune disposant d'un slug.
@@ -63,6 +64,13 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
   return (
     <>
       <FaqSchema items={site.faq} />
+      <BreadcrumbSchema
+        site={site}
+        items={[
+          { name: "Accueil", path: "/" },
+          { name: `Électricien à ${area.name}`, path: `/electricien/${area.slug}` },
+        ]}
+      />
       <Hero hero={hero} site={site} priority />
       <TrustBadges badges={site.trustBadges} />
 
@@ -81,6 +89,12 @@ export default async function VillePage({ params }: { params: Promise<{ ville: s
           tone="light"
         />
       )}
+
+      <ServiceLinks
+        title={`Mes prestations détaillées à ${area.name}`}
+        intro="Découvrez le détail de mes interventions en électricité, chacune adaptée à un besoin précis."
+        tone="white"
+      />
 
       <ContactCta
         site={site}

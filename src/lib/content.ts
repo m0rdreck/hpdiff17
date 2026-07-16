@@ -1,7 +1,8 @@
 import { site } from "@/content/site";
 import { pages } from "@/content/pages";
 import { serviceDetails } from "@/content/services";
-import type { Page, ServiceArea, ServiceDetail, SiteConfig } from "@/content/types";
+import { articles, articleOrder } from "@/content/articles";
+import type { Article, Page, ServiceArea, ServiceDetail, SiteConfig } from "@/content/types";
 
 /**
  * Couche d'accès au contenu.
@@ -44,4 +45,13 @@ export async function getServiceDetail(slug: string): Promise<ServiceDetail | nu
 
 export async function getAllServiceDetails(): Promise<ServiceDetail[]> {
   return Object.values(serviceDetails);
+}
+
+/** Articles de la section « Guides & conseils », dans l'ordre d'affichage. */
+export async function getAllArticles(): Promise<Article[]> {
+  return articleOrder.map((slug) => articles[slug]).filter(Boolean);
+}
+
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
+  return articles[slug] ?? null;
 }

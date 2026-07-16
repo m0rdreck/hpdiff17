@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Montserrat } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { getSiteConfig } from "@/lib/content";
 import { Header } from "@/components/layout/Header";
@@ -69,6 +70,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <main id="contenu">{children}</main>
         <Footer site={site} />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

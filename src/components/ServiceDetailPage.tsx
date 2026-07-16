@@ -8,7 +8,7 @@ import { ServiceAreaSection } from "@/components/sections/ServiceAreaSection";
 import { Faq } from "@/components/sections/Faq";
 import { Reveal } from "@/components/ui/Reveal";
 import { Icon } from "@/components/ui/Icon";
-import { FaqSchema } from "@/components/StructuredData";
+import { FaqSchema, BreadcrumbSchema } from "@/components/StructuredData";
 import { notFound } from "next/navigation";
 
 export async function ServiceDetailPage({ slug }: { slug: string }) {
@@ -22,6 +22,14 @@ export async function ServiceDetailPage({ slug }: { slug: string }) {
   return (
     <>
       <FaqSchema items={site.faq} />
+      <BreadcrumbSchema
+        site={site}
+        items={[
+          { name: "Accueil", path: "/" },
+          { name: "Électricité générale", path: "/electricite-generale" },
+          { name: `${service.hero.title} ${service.hero.highlight ?? ""}`.trim(), path: service.seo.path },
+        ]}
+      />
       <Hero hero={service.hero} site={site} priority />
 
       <IntroBlock title={service.hero.title + " " + (service.hero.highlight ?? "")} body={service.intro} tone="white" />

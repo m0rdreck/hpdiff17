@@ -53,6 +53,7 @@ const nav: NavItem[] = [
       .filter((a) => a.slug)
       .map((a) => ({ label: `Électricien à ${a.name}`, href: `/electricien/${a.slug}` })),
   },
+  { label: "Guides", href: "/guides" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -68,7 +69,7 @@ export const site: SiteConfig = {
   description:
     "HP Diff est une entreprise d’électricité générale à Saintes. Installation, rénovation et dépannage électriques : contactez votre électricien pour une intervention adaptée à vos besoins.",
   url: "https://hpdiff17.fr",
-  logo: "/images/logo.png",
+  logo: "/images/hp-diff.png",
 
   phone: { display: "06 68 87 49 41", e164: "+33668874941" },
   email: "contact@hpdiff17.fr",
