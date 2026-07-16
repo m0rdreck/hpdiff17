@@ -55,7 +55,21 @@ console.log("  prestations:", services.totalDocs, "→", services.docs.map((s) =
 const noHero = services.docs.filter((s) => !s.hero?.image).map((s) => s.slug);
 if (noHero.length) console.log("  ⚠️ sans image de bandeau :", noHero.join(", "));
 
+const pages = await payload.find({ collection: "pages", limit: 0, depth: 0 });
+console.log("  pages     :", pages.totalDocs, "→", pages.docs.map((p) => p.slug).join(", "));
+
+// Les 3 pages principales sont adossées à des routes fixes : si l'une manque
+// en base, sa route tombe en 404.
+const REQUIRED = ["/", "/depannage-electrique", "/electricite-generale"];
+const missingPages = REQUIRED.filter((s) => !pages.docs.some((p) => p.slug === s));
+if (missingPages.length) console.log("  ⚠️ pages manquantes :", missingPages.join(", "));
+
 const ok =
-  iconsOk && areas.totalDocs > 0 && !orphans.length && services.totalDocs > 0 && !noHero.length;
+  iconsOk &&
+  areas.totalDocs > 0 &&
+  !orphans.length &&
+  services.totalDocs > 0 &&
+  !noHero.length &&
+  !missingPages.length;
 console.log(ok ? "\n✓ prêt pour le déploiement" : "\n✗ problème détecté");
 process.exit(ok ? 0 : 1);
