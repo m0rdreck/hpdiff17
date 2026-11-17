@@ -5,6 +5,7 @@ import * as migration_20260716_211715_service_details from './20260716_211715_se
 import * as migration_20260716_214314_pages from './20260716_214314_pages';
 import * as migration_20260717_090000_guides_related_rel from './20260717_090000_guides_related_rel';
 import * as migration_20260717_100000_siret from './20260717_100000_siret';
+import * as migration_20261117_120000_siret_update from './20261117_120000_siret_update';
 
 export const migrations = [
   {
@@ -41,5 +42,10 @@ export const migrations = [
     up: migration_20260717_100000_siret.up,
     down: migration_20260717_100000_siret.down,
     name: '20260717_100000_siret'
+  },
+  {
+    up: migration_20261117_120000_siret_update.up,
+    down: migration_20261117_120000_siret_update.down,
+    name: '20261117_120000_siret_update'
   },
 ];
