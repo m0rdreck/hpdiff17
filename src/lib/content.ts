@@ -42,7 +42,7 @@ function mediaUrl(v: unknown): string {
   return typeof v === "object" && v !== null && "url" in v ? ((v as { url?: string }).url ?? "") : "";
 }
 
-/** SIRET à la française : « 477 692 156 00078 » (SIREN 3-3-3 + NIC 5). */
+/** SIRET à la française : « 477 692 156 00086 » (SIREN 3-3-3 + NIC 5). */
 function formatSiret(raw: string): string {
   const d = raw.replace(/\D/g, "");
   if (d.length !== 14) return raw; // saisie inattendue : on n'invente rien
@@ -93,7 +93,7 @@ function toSiteConfig(
     // --- administré dans le back-office ---
     name: s.name,
     legalName: s.legalName,
-    // Mis en forme ici (477 692 156 00078) : la base garde la saisie brute.
+    // Mis en forme ici (477 692 156 00086) : la base garde la saisie brute.
     siret: s.siret ? formatSiret(s.siret) : undefined,
     slogan: s.slogan,
     description: s.description,
